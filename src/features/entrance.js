@@ -19,7 +19,7 @@ export const Entrance = () => {
       <Tab eventKey="profile" title="Profile">
         <Profile />
       </Tab>
-      <Tab eventKey="availability" title="Availability" disabled>
+      <Tab eventKey="availability" title="Availability">
         <Availability />
       </Tab>
     </Tabs>
