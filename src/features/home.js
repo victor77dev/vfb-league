@@ -35,24 +35,10 @@ const TEAM_FILTER = 'TeamFilter';
 export const Home = () => {
     const storedTeam = localStorage.getItem(TEAM_FILTER);
 
-    const [players, setPlayers] = useState(null);
     const [matches, setMatches] = useState(null);
     const [team, setFilteredTeam] = useState(storedTeam ? JSON.parse(storedTeam) : Array(6).fill(true));
 
     useEffect(() => {
-        // supabase.auth.getSession().then(({ data: { session } }) => {
-        //   setSession(session)
-        // });
-    
-        // supabase.auth.onAuthStateChange((_event, session) => {
-        //   setSession(session)
-        // });
-
-        supabase.from('players').select('*')
-            .then(({ data, error, status }) => {
-                setPlayers(data);
-            });
-
         supabase.from('matches').select('*')
             .then(({ data, error, status }) => {
                 const count = new Array(6).fill(0)
