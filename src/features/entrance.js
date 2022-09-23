@@ -2,11 +2,13 @@ import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 
 import {Home} from './home';
+import {Profile} from './profile';
+import {Availability} from './availability';
 
 export const Entrance = () => {
   return (
     <Tabs
-      defaultActiveKey="profile"
+      defaultActiveKey="home"
       id="uncontrolled-tab-example"
       className="mb-3"
       fill
@@ -15,10 +17,10 @@ export const Entrance = () => {
         <Home />
       </Tab>
       <Tab eventKey="profile" title="Profile">
-        <Home />
+        <Profile />
       </Tab>
-      <Tab eventKey="contact" title="Contact" disabled>
-        <Home />
+      <Tab eventKey="availability" title="Availability" disabled>
+        <Availability />
       </Tab>
     </Tabs>
   );
