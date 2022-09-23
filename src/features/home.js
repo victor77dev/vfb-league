@@ -55,7 +55,16 @@ export const Home = () => {
 
         supabase.from('matches').select('*')
             .then(({ data, error, status }) => {
-                setMatches(data);
+                const count = new Array(6).fill(0)
+
+                const modified = data.map((match) => {
+                    count[match.team - 1]++;
+                    return {
+                        ...match,
+                        code: `T${match.team}.${count[match.team - 1]}`,
+                    }
+                });
+                setMatches(modified);
             });
 
     }, []);
@@ -63,7 +72,6 @@ export const Home = () => {
     useEffect(() => {
         const stored = localStorage.getItem(TEAM_FILTER);
         const current = JSON.stringify(team);
-        console.log(stored, current)
 
         if (!stored || stored !== current) {
             localStorage.setItem(TEAM_FILTER, current);

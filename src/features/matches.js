@@ -14,6 +14,7 @@ const highlightVenue = (match) => {
 const row = (match) => {
     return (
         <tr key={match.id} className={highlightVenue(match)}>
+            <td>{match.code}</td>
             <td>{match.team}</td>
             <td>{getDateString(match.date)}</td>
             <td>{match.time}</td>
@@ -31,6 +32,7 @@ export const Matches = ({matches}) => {
         <Table bordered responsive hover>
             <thead>
                 <tr>
+                <th>#</th>
                 <th>Team</th>
                 <th>Date</th>
                 <th>Time</th>
