@@ -28,7 +28,7 @@ export const Matches = ({matches}) => {
     return (
         <>
         <div>Matches</div>
-        <Table bordered>
+        <Table bordered responsive hover>
             <thead>
                 <tr>
                 <th>Team</th>
