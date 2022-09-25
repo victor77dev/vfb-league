@@ -11,9 +11,14 @@ import {Availability} from './availability';
 
 import {supabase} from './supabaseClient';
 
+const TEAM_FILTER = 'TeamFilter';
+
 export const Entrance = () => {
     const [session, setSession] = useState(null);
     const [activeTab, setActiveTab] = useState('home');
+
+    const storedTeam = localStorage.getItem(TEAM_FILTER);
+    const [team, setFilteredTeam] = useState(storedTeam ? JSON.parse(storedTeam) : Array(6).fill(true));
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
@@ -27,6 +32,15 @@ export const Entrance = () => {
         })
     }, []);
 
+    useEffect(() => {
+        const stored = localStorage.getItem(TEAM_FILTER);
+        const current = JSON.stringify(team);
+
+        if (!stored || stored !== current) {
+            localStorage.setItem(TEAM_FILTER, current);
+        }
+    }, [team]);
+
     return (
         <Tabs
             activeKey={activeTab}
@@ -36,7 +50,7 @@ export const Entrance = () => {
             fill
         >
             <Tab eventKey="home" title="Home">
-                <Home />
+                <Home team={team} setFilteredTeam={setFilteredTeam}/>
             </Tab>
             {
                 session &&
@@ -57,7 +71,7 @@ export const Entrance = () => {
                         </Tab>
             }
             <Tab eventKey="availability" title="Availability">
-                <Availability />
+                <Availability team={team} setFilteredTeam={setFilteredTeam}/>
             </Tab>
         </Tabs>
     );

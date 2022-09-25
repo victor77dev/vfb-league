@@ -1,42 +1,13 @@
 import {useState, useEffect} from 'react';
-import ToggleButton from 'react-bootstrap/ToggleButton';
 
 import {Filter} from '../components/filter';
+import {TeamFilter} from '../components/teamFilter';
 
 import {Matches} from './matches';
 import {supabase} from './supabaseClient';
 
-const TeamFilter = ({team, setFilteredTeam}) => {
-    return (
-        team.map((checked, index) => {
-            return (
-                <ToggleButton
-                    className="mb-2"
-                    id={`team-${index}`}
-                    key={`team-${index}`}
-                    variant="outline-primary"
-                    type="checkbox"
-                    value={index}
-                    checked={checked}
-                    onChange={(e) => {
-                        team[index] = !team[index];
-                        setFilteredTeam([...team]);
-                    }}
-                >
-                    {`Team ${index + 1}`}
-                </ToggleButton>
-            );
-        })
-    );
-}
-
-const TEAM_FILTER = 'TeamFilter';
-
-export const Home = () => {
-    const storedTeam = localStorage.getItem(TEAM_FILTER);
-
+export const Home = ({team, setFilteredTeam}) => {
     const [matches, setMatches] = useState(null);
-    const [team, setFilteredTeam] = useState(storedTeam ? JSON.parse(storedTeam) : Array(6).fill(true));
 
     useEffect(() => {
         supabase.from('matches').select('*')
@@ -54,15 +25,6 @@ export const Home = () => {
             });
 
     }, []);
-
-    useEffect(() => {
-        const stored = localStorage.getItem(TEAM_FILTER);
-        const current = JSON.stringify(team);
-
-        if (!stored || stored !== current) {
-            localStorage.setItem(TEAM_FILTER, current);
-        }
-    }, [team]);
 
     return (
         <>
