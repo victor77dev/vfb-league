@@ -61,7 +61,7 @@ export const Availability = ({team, setFilteredTeam}) => {
             <Filter>
                 <TeamFilter team={team} setFilteredTeam={setFilteredTeam} />
             </Filter>
-            <Matches availability matches={matches?.filter((match) => team[match.team - 1])}/>
+            <Matches id="availability" availability matches={matches?.filter((match) => team[match.team - 1])}/>
         </>
     );
 }

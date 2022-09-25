@@ -31,7 +31,7 @@ export const Home = ({team, setFilteredTeam}) => {
             <Filter>
                 <TeamFilter team={team} setFilteredTeam={setFilteredTeam} />
             </Filter>
-            <Matches matches={matches?.filter((match) => team[match.team - 1])}/>
+            <Matches id="home" matches={matches?.filter((match) => team[match.team - 1])}/>
         </>
     );
 }

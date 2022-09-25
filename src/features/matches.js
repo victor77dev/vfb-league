@@ -6,32 +6,9 @@ import ToggleButton from 'react-bootstrap/ToggleButton';
 
 import {convertGermanDate, getDateString} from '../utils/date';
 import {Filter} from '../components/filter';
+import {TableFilter} from '../components/tableFilter';
 
-const columnName = ['#', 'Team', 'Date', 'Time', 'Venue', 'Home', 'Guest'];
-
-const TableFilter = ({columns, setFilteredColumns}) => {
-    return (
-        columns.map((value, index) => {
-            return (
-                <ToggleButton
-                    className="mb-2"
-                    id={columnName[index]}
-                    key={columnName[index]}
-                    variant="outline-primary"
-                    type="checkbox"
-                    value={index}
-                    checked={value}
-                    onChange={(e) => {
-                        columns[index] = !columns[index];
-                        setFilteredColumns([...columns]);
-                    }}
-                >
-                    {columnName[index]}
-                </ToggleButton>
-            );
-        })
-    );
-}
+export const columnName = ['#', 'Team', 'Date', 'Time', 'Venue', 'Home', 'Guest'];
 
 const highlightVenue = (match) => {
     if (!match.isHome) return null;
@@ -94,9 +71,8 @@ const row = (match, availability, columns) => {
     );
 };
 
-const TABLE_FILTER = 'TABLE_FILTER';
-
-export const Matches = ({matches, availability}) => {
+export const Matches = ({matches, availability, id}) => {
+    const TABLE_FILTER = `TABLE_FILTER-${id}`;
     const storedTeam = localStorage.getItem(TABLE_FILTER);
 
     const [columns, setFilteredColumns] = useState(storedTeam ? JSON.parse(storedTeam) : Array(columnName.length).fill(true));
@@ -115,7 +91,7 @@ export const Matches = ({matches, availability}) => {
             <h2>Matches</h2>
             <h4>Select column ↓</h4>
             <Filter>
-                <TableFilter columns={columns} setFilteredColumns={setFilteredColumns} />
+                <TableFilter id={id} columns={columns} setFilteredColumns={setFilteredColumns} />
             </Filter>
             <Table bordered responsive hover>
                 <thead>
