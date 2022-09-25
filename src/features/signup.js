@@ -32,12 +32,11 @@ export const Signup = () => {
                 password,
             });
 
-            const playerId = players.find((player) => player.name === name).id;
             if (error) throw error
 
-            alert('Check your email for the login link!')
-
             const {user} = data;
+
+            const playerId = players.find((player) => player.name === name).id;
 
             await supabase.from('profiles').upsert({
                 id: user.id,
