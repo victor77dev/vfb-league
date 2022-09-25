@@ -1,5 +1,6 @@
 import {useState, useEffect} from 'react';
 import ToggleButton from 'react-bootstrap/ToggleButton';
+import Alert from 'react-bootstrap/Alert';
 
 import {Filter} from '../components/filter';
 
@@ -35,23 +36,30 @@ const TEAM_FILTER = 'TeamFilter';
 export const Availability = () => {
     const storedTeam = localStorage.getItem(TEAM_FILTER);
 
-    const [players, setPlayers] = useState(null);
+    const [session, setSession] = useState(null);
     const [matches, setMatches] = useState(null);
     const [team, setFilteredTeam] = useState(storedTeam ? JSON.parse(storedTeam) : Array(6).fill(true));
 
     useEffect(() => {
-        // supabase.auth.getSession().then(({ data: { session } }) => {
-        //   setSession(session)
-        // });
-    
-        // supabase.auth.onAuthStateChange((_event, session) => {
-        //   setSession(session)
-        // });
+        const getProfile = async (session) => {
+            const { user } = session;
 
-        supabase.from('players').select('*')
-            .then(({ data, error, status }) => {
-                setPlayers(data);
-            });
+            const {data: profile, error, status} = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', user.id)
+                .single();
+        };
+
+        supabase.auth.getSession().then(({ data: { session } }) => {
+          setSession(session)
+          getProfile(session);
+        });
+    
+        supabase.auth.onAuthStateChange((_event, session) => {
+          setSession(session)
+          getProfile(session);
+        });
 
         supabase.from('matches').select('*')
             .then(({ data, error, status }) => {
@@ -77,6 +85,14 @@ export const Availability = () => {
             localStorage.setItem(TEAM_FILTER, current);
         }
     }, [team]);
+
+    if (!session) {
+        return (
+        <Alert key="danger" variant="danger">
+            Please login before editing.
+        </Alert>
+        );
+    }
 
     return (
         <>
