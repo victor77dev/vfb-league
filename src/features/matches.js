@@ -112,36 +112,36 @@ export const Matches = ({matches, availability}) => {
 
     return (
         <>
-        <h2>Matches</h2>
-        <h4>Select column ↓</h4>
-        <Filter>
-            <TableFilter columns={columns} setFilteredColumns={setFilteredColumns} />
-        </Filter>
-        <Table bordered responsive hover>
-            <thead>
-                <tr>
-                    {
-                        columnName.map((column, index) => {
-                            if (!columns[index]) return null;
+            <h2>Matches</h2>
+            <h4>Select column ↓</h4>
+            <Filter>
+                <TableFilter columns={columns} setFilteredColumns={setFilteredColumns} />
+            </Filter>
+            <Table bordered responsive hover>
+                <thead>
+                    <tr>
+                        {
+                            columnName.map((column, index) => {
+                                if (!columns[index]) return null;
 
-                            return <th key={column}>{column}</th>;
-                        })
-                    }
-                    {
-                        availability &&
-                        <th>Availability</th>
-                    }
-                </tr>
-            </thead>
-            <tbody>
-                {matches && matches.map((match) => ({
-                    ...match,
-                    date: convertGermanDate(match.date),
-                }))
-                    .sort((a, b) => (a.date > b.date ? 1 : -1))
-                    .map((match) => row(match, availability, columns))}
-            </tbody>
-        </Table>
+                                return <th key={column}>{column}</th>;
+                            })
+                        }
+                        {
+                            availability &&
+                            <th>Availability</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    {matches && matches.map((match) => ({
+                        ...match,
+                        date: convertGermanDate(match.date),
+                    }))
+                        .sort((a, b) => (a.date > b.date ? 1 : -1))
+                        .map((match) => row(match, availability, columns))}
+                </tbody>
+            </Table>
         </>
     );
 }
