@@ -12,53 +12,53 @@ import {Availability} from './availability';
 import {supabase} from './supabaseClient';
 
 export const Entrance = () => {
-  const [session, setSession] = useState(null);
-  const [activeTab, setActiveTab] = useState('home');
+    const [session, setSession] = useState(null);
+    const [activeTab, setActiveTab] = useState('home');
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      setActiveTab('home');
-    })
+    useEffect(() => {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setSession(session)
+            setActiveTab('home');
+        })
 
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-      setActiveTab('home');
-    })
-  }, []);
+        supabase.auth.onAuthStateChange((_event, session) => {
+            setSession(session)
+            setActiveTab('home');
+        })
+    }, []);
 
-  return (
-    <Tabs
-      activeKey={activeTab}
-      onSelect={(key) => {setActiveTab(key)}}
-      id="uncontrolled-tab-example"
-      className="mb-3"
-      fill
-    >
-      <Tab eventKey="home" title="Home">
-        <Home />
-      </Tab>
-      {
-        session &&
-          <Tab eventKey="profile" title="Profile">
-            <Profile session={session}/>
-          </Tab>
-      }
-      {
-        !session &&
-          <Tab eventKey="login" title="Login">
-            <Login />
-          </Tab>
-      }
-      {
-        !session &&
-            <Tab eventKey="signup" title="Signup">
-              <Signup />
+    return (
+        <Tabs
+            activeKey={activeTab}
+            onSelect={(key) => {setActiveTab(key)}}
+            id="uncontrolled-tab-example"
+            className="mb-3"
+            fill
+        >
+            <Tab eventKey="home" title="Home">
+                <Home />
             </Tab>
-      }
-      <Tab eventKey="availability" title="Availability">
-        <Availability />
-      </Tab>
-    </Tabs>
-  );
+            {
+                session &&
+                    <Tab eventKey="profile" title="Profile">
+                        <Profile session={session}/>
+                    </Tab>
+            }
+            {
+                !session &&
+                    <Tab eventKey="login" title="Login">
+                        <Login />
+                    </Tab>
+            }
+            {
+                !session &&
+                        <Tab eventKey="signup" title="Signup">
+                            <Signup />
+                        </Tab>
+            }
+            <Tab eventKey="availability" title="Availability">
+                <Availability />
+            </Tab>
+        </Tabs>
+    );
 }
