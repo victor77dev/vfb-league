@@ -33,7 +33,7 @@ export const Profile = ({session}) => {
 
                 if (profile) {
                     setEmail(profile.email);
-                    const {data: player, error, status} = await supabase
+                    const {data: player} = await supabase
                         .from('players')
                         .select('*')
                         .eq('id', profile.player)

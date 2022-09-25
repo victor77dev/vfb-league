@@ -13,13 +13,14 @@ export const Availability = ({team, setFilteredTeam}) => {
 
     useEffect(() => {
         const getProfile = async (session) => {
-            const { user } = session;
+            const {user} = session;
 
-            const {data: profile, error, status} = await supabase
+            const {data: profile} = await supabase
                 .from('profiles')
                 .select('*')
                 .eq('id', user.id)
                 .single();
+            console.log(profile)
         };
 
         supabase.auth.getSession().then(({ data: { session } }) => {

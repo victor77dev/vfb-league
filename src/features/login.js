@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
 import Spinner from 'react-bootstrap/Spinner';
 
 import Button from 'react-bootstrap/Button';
@@ -12,30 +12,16 @@ export const Login = () => {
     const [loading, setLoading] = useState(false);
     const [validated, setValidated] = useState(false);
 
-    useEffect(() => {
-    }, []);
-
-
     const handleSignup = async (e) => {
         e.preventDefault()
         try {
             setLoading(true)
-            const {data, error} = await supabase.auth.signInWithPassword({
+            const {error} = await supabase.auth.signInWithPassword({
                 email,
                 password,
             });
 
-            console.log(data)
             if (error) throw error
-
-            const {user} = data;
-
-            // await supabase.from('profiles').upsert({
-            //     id: user.id,
-            //     player: playerId,
-            //     email: user.email,
-            // });
-
         } catch (error) {
             alert(error.error_description || error.message)
             setValidated(false);

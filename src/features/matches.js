@@ -84,7 +84,7 @@ export const Matches = ({matches, availability, id}) => {
         if (!stored || stored !== current) {
             localStorage.setItem(TABLE_FILTER, current);
         }
-    }, [columns]);
+    }, [columns, TABLE_FILTER]);
 
     return (
         <>
