@@ -128,7 +128,13 @@ export const Matches = ({matches, availability, id, setAvailability}) => {
                         ...match,
                         date: convertGermanDate(match.date),
                     }))
-                        .sort((a, b) => (a.date > b.date ? 1 : -1))
+                        .sort((a, b) => {
+                            if (a.date.getTime() !== b.date.getTime()) {
+                                return a.date > b.date ? 1 : -1;
+                            } else {
+                                return a.time > b.time ? 1 : -1
+                            }
+                        })
                         .map((match) => row(
                             match,
                             availability?.[match.id],
