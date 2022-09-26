@@ -6,6 +6,7 @@ import Tabs from 'react-bootstrap/Tabs';
 import {Home} from './home';
 import {Profile} from './profile';
 import {Signup} from './signup';
+import {Recovery} from './recovery';
 import {Login} from './login';
 import {Availability} from './availability';
 
@@ -16,6 +17,7 @@ const TEAM_FILTER = 'TeamFilter';
 export const Entrance = () => {
     const [session, setSession] = useState(null);
     const [activeTab, setActiveTab] = useState('home');
+    const [recovery, setRecovery] = useState(false);
 
     const storedTeam = localStorage.getItem(TEAM_FILTER);
     const [team, setFilteredTeam] = useState(storedTeam ? JSON.parse(storedTeam) : Array(6).fill(true));
@@ -23,13 +25,22 @@ export const Entrance = () => {
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
             setSession(session)
-            setActiveTab('home');
-        })
 
-        supabase.auth.onAuthStateChange((_event, session) => {
-            setSession(session)
-            setActiveTab('home');
-        })
+            if (!recovery) {
+                setActiveTab('home');
+            }
+        });
+
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (event === "PASSWORD_RECOVERY") {
+                setRecovery(true);
+                setActiveTab('recovery');
+            } else {
+                setActiveTab('home');
+            }
+
+            setSession(session);
+        });
     }, []);
 
     useEffect(() => {
@@ -40,6 +51,12 @@ export const Entrance = () => {
             localStorage.setItem(TEAM_FILTER, current);
         }
     }, [team]);
+
+    useEffect(() => {
+        if (recovery) {
+            setActiveTab('recovery');
+        }
+    }, [recovery]);
 
     return (
         <Tabs
@@ -70,8 +87,14 @@ export const Entrance = () => {
                             <Signup />
                         </Tab>
             }
+            {
+                recovery &&
+                        <Tab eventKey="recovery" title="Recovery">
+                            <Recovery />
+                        </Tab>
+            }
             <Tab eventKey="availability" title="Availability">
-                <Availability team={team} setFilteredTeam={setFilteredTeam}/>
+                <Availability team={team} setFilteredTeam={setFilteredTeam} session={session}/>
             </Tab>
         </Tabs>
     );

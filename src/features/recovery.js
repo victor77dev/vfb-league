@@ -1,4 +1,5 @@
 import {useState} from 'react';
+import Alert from 'react-bootstrap/Alert';
 import Spinner from 'react-bootstrap/Spinner';
 
 import Button from 'react-bootstrap/Button';
@@ -6,18 +7,23 @@ import Form from 'react-bootstrap/Form';
 
 import {supabase} from './supabaseClient';
 
-export const Login = () => {
-    const [email, setEmail] = useState('');
+export const Recovery = () => {
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
     const [validated, setValidated] = useState(false);
 
-    const handleLogin = async (e) => {
+    const handleRecovery = async (e) => {
         e.preventDefault()
+        if (password !== confirmPassword) {
+            setError('Password incorrect!');
+            return;
+        }
+
         try {
             setLoading(true)
-            const {error} = await supabase.auth.signInWithPassword({
-                email,
+            const {error} = await supabase.auth.updateUser({
                 password,
             });
 
@@ -26,29 +32,21 @@ export const Login = () => {
             alert(error.error_description || error.message)
             setValidated(false);
         } finally {
+            setError(null);
             setLoading(false);
         }
     };
 
-    const resetPassword = async (e) => {
-        await supabase.auth.resetPasswordForEmail(email);
-    }
-
     return (
         <>
-            <Form validated={validated} onSubmit={handleLogin}>
-                <Form.Group className="mb-3" controlId="formBasicEmail">
-                    <Form.Label>Email address</Form.Label>
-                    <Form.Control
-                        type="email"
-                        placeholder="Enter email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                </Form.Group>
-    
+            { error && 
+                <Alert key="danger" variant="danger">
+                    error
+                </Alert>
+            }
+            <Form validated={validated} onSubmit={handleRecovery}>
                 <Form.Group className="mb-3" controlId="formBasicPassword">
-                    <Form.Label>Password</Form.Label>
+                    <Form.Label>New Password</Form.Label>
                     <Form.Control
                         type="password"
                         placeholder="Password"
@@ -56,13 +54,20 @@ export const Login = () => {
                         onChange={(e) => setPassword(e.target.value)}
                     />
                 </Form.Group>
+
+                <Form.Group className="mb-3" controlId="formBasicPassword">
+                    <Form.Label>Confirm Password</Form.Label>
+                    <Form.Control
+                        type="password"
+                        placeholder="Password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                    />
+                </Form.Group>
                 <Button variant="primary" type="submit">
                     {loading ? <Spinner animation="border" /> : 'Login'}
                 </Button>
             </Form>
-            <Button style={{marginTop: 16}} variant="outline-primary" onClick={resetPassword}>
-                {loading ? <Spinner animation="border" /> : 'Reset password'}
-            </Button>
         </>
     );
 }
