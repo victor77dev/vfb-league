@@ -20,11 +20,11 @@ const highlightVenue = (match) => {
     }
 }
 
-const AvailabilityButtons = ({match}) => {
-    const [value, setValue] = useState(null);
+const AvailabilityButtons = ({match, availability, setMatchAvailability}) => {
+    const [value, setValue] = useState(availability);
 
     return (
-        ['Yes', 'No', 'Maybe'].map((option, index) => {
+        ['Yes', 'No', 'Maybe'].map((option) => {
             return (
                 <ToggleButton
                     className="mb-2"
@@ -36,6 +36,7 @@ const AvailabilityButtons = ({match}) => {
                     checked={option === value}
                     onChange={(e) => {
                         setValue(option);
+                        setMatchAvailability(option);
                     }}
                 >
                     {option}
@@ -45,7 +46,7 @@ const AvailabilityButtons = ({match}) => {
     );
 }
 
-const row = (match, availability, columns) => {
+const row = (match, availability, columns, setMatchAvailability) => {
     const array = [
         match.code, match.team, getDateString(match.date),
         match.time, match.venue, match.home, match.guest,
@@ -60,10 +61,14 @@ const row = (match, availability, columns) => {
                     return <td key={value}>{value}</td>;
                 })
             }
-            { availability &&
+            { !!setMatchAvailability &&
                 <td>
                     <ButtonGroup className="mb-2">
-                        <AvailabilityButtons match={match.code}/>
+                        <AvailabilityButtons
+                            match={match.id}
+                            availability={availability}
+                            setMatchAvailability={setMatchAvailability}
+                        />
                     </ButtonGroup>
                 </td>
             }
@@ -71,11 +76,20 @@ const row = (match, availability, columns) => {
     );
 };
 
-export const Matches = ({matches, availability, id}) => {
+export const Matches = ({matches, availability, id, setAvailability}) => {
     const TABLE_FILTER = `TABLE_FILTER-${id}`;
     const storedTeam = localStorage.getItem(TABLE_FILTER);
 
     const [columns, setFilteredColumns] = useState(storedTeam ? JSON.parse(storedTeam) : Array(columnName.length).fill(true));
+
+    const setMatchAvailability = (match) => (option) => {
+        if (match) {
+            setAvailability({
+                ...availability,
+                [match]: option,
+            })
+        }
+    }
 
     useEffect(() => {
         const stored = localStorage.getItem(TABLE_FILTER);
@@ -115,7 +129,12 @@ export const Matches = ({matches, availability, id}) => {
                         date: convertGermanDate(match.date),
                     }))
                         .sort((a, b) => (a.date > b.date ? 1 : -1))
-                        .map((match) => row(match, availability, columns))}
+                        .map((match) => row(
+                            match,
+                            availability?.[match.id],
+                            columns,
+                            setAvailability ? setMatchAvailability(match.id) : null,
+                        ))}
                 </tbody>
             </Table>
         </>

@@ -94,7 +94,11 @@ export const Entrance = () => {
                         </Tab>
             }
             <Tab eventKey="availability" title="Availability">
-                <Availability team={team} setFilteredTeam={setFilteredTeam} session={session}/>
+                <Availability
+                    team={team}
+                    setFilteredTeam={setFilteredTeam}
+                    session={session}
+                />
             </Tab>
         </Tabs>
     );
