@@ -46,7 +46,7 @@ export const Entrance = () => {
 
             setSession(session);
         });
-    }, []);
+    }, [recovery]);
 
     useEffect(() => {
         supabase.from('matches').select('*')
