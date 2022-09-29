@@ -7,8 +7,7 @@ import {TeamFilter} from '../components/teamFilter';
 import {Matches} from './matches';
 import {supabase} from './supabaseClient';
 
-export const Availability = ({session, team, setFilteredTeam}) => {
-    const [matches, setMatches] = useState(null);
+export const Availability = ({session, matches, team, setFilteredTeam}) => {
     const [profile, setProfile] = useState(null);
     const [availability, setAvailability] = useState({});
 
@@ -29,25 +28,9 @@ export const Availability = ({session, team, setFilteredTeam}) => {
             }
         };
 
-        const getMatch = async () => {
-            const {data} = await supabase.from('matches').select('*');
-            const count = new Array(6).fill(0)
-
-            const modified = data.map((match) => {
-                count[match.team - 1]++;
-                return {
-                    ...match,
-                    code: `T${match.team}.${count[match.team - 1]}`,
-                }
-            });
-            setMatches(modified);
-        }
-
         if (!session) return;
 
-        getProfile(session).then(() => {
-            getMatch();
-        });
+        getProfile(session)
     }, [session]);
 
     const updateAvailability = async (update) => {

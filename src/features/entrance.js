@@ -14,7 +14,10 @@ import {supabase} from './supabaseClient';
 
 const TEAM_FILTER = 'TeamFilter';
 
+const NUM_OF_TEAM = 6;
+
 export const Entrance = () => {
+    const [matches, setMatches] = useState(null);
     const [session, setSession] = useState(null);
     const [activeTab, setActiveTab] = useState('home');
     const [recovery, setRecovery] = useState(false);
@@ -44,6 +47,24 @@ export const Entrance = () => {
     }, []);
 
     useEffect(() => {
+        supabase.from('matches').select('*')
+            .then(({ data, error, status }) => {
+                const count = new Array(NUM_OF_TEAM).fill(0)
+
+                const modified = data.map((match) => {
+                    count[match.team - 1]++;
+                    return {
+                        ...match,
+                        code: `T${match.team}.${count[match.team - 1]}`,
+                    }
+                });
+                setMatches(modified);
+            });
+
+    }, []);
+
+
+    useEffect(() => {
         const stored = localStorage.getItem(TEAM_FILTER);
         const current = JSON.stringify(team);
 
@@ -67,7 +88,11 @@ export const Entrance = () => {
             fill
         >
             <Tab eventKey="home" title="Home">
-                <Home team={team} setFilteredTeam={setFilteredTeam}/>
+                <Home
+                    team={team}
+                    setFilteredTeam={setFilteredTeam}
+                    matches={matches}
+                />
             </Tab>
             {
                 session &&
@@ -98,6 +123,7 @@ export const Entrance = () => {
                     team={team}
                     setFilteredTeam={setFilteredTeam}
                     session={session}
+                    matches={matches}
                 />
             </Tab>
         </Tabs>
