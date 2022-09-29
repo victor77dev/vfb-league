@@ -5,7 +5,7 @@ export const convertGermanDate = (date) => {
 }
 
 export const getDateString = (date) => {
-    let locale = navigator.language || 'de';
+    let locale = 'de';
 
     return `${date.toLocaleDateString(locale, {weekday: 'short'})} ${date.toLocaleDateString(locale)}`;
 }
