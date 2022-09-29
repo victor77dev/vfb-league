@@ -12,6 +12,8 @@ import {Availability} from './availability';
 
 import {supabase} from './supabaseClient';
 
+import {convertGermanDate} from '../utils/date';
+
 const TEAM_FILTER = 'TeamFilter';
 
 const NUM_OF_TEAM = 6;
@@ -51,13 +53,25 @@ export const Entrance = () => {
             .then(({ data, error, status }) => {
                 const count = new Array(NUM_OF_TEAM).fill(0)
 
-                const modified = data.map((match) => {
-                    count[match.team - 1]++;
-                    return {
+                const modified = data
+                    .map((match) => ({
                         ...match,
-                        code: `T${match.team}.${count[match.team - 1]}`,
-                    }
-                });
+                        date: convertGermanDate(match.date),
+                    }))
+                    .sort((a, b) => {
+                        if (a.date.getTime() !== b.date.getTime()) {
+                            return a.date > b.date ? 1 : -1;
+                        } else {
+                            return a.time > b.time ? 1 : -1
+                        }
+                    })
+                    .map((match) => {
+                        count[match.team - 1]++;
+                        return {
+                            ...match,
+                            code: `T${match.team}.${count[match.team - 1]}`,
+                        }
+                    });
                 setMatches(modified);
             });
 

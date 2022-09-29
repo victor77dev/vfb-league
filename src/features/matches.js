@@ -4,7 +4,7 @@ import Table from 'react-bootstrap/Table';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 
-import {convertGermanDate, getDateString} from '../utils/date';
+import {getDateString} from '../utils/date';
 import {Filter} from '../components/filter';
 import {TableFilter} from '../components/tableFilter';
 
@@ -124,10 +124,7 @@ export const Matches = ({matches, availability, id, setAvailability}) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {matches && matches.map((match) => ({
-                        ...match,
-                        date: convertGermanDate(match.date),
-                    }))
+                    {matches && matches
                         .sort((a, b) => {
                             if (a.date.getTime() !== b.date.getTime()) {
                                 return a.date > b.date ? 1 : -1;
