@@ -23,6 +23,10 @@ const highlightVenue = (match) => {
 const AvailabilityButtons = ({match, availability, setMatchAvailability}) => {
     const [value, setValue] = useState(availability);
 
+    useEffect(() => {
+        setValue(availability);
+    }, [availability]);
+
     return (
         ['Yes', 'No', 'Maybe'].map((option) => {
             return (
@@ -46,7 +50,7 @@ const AvailabilityButtons = ({match, availability, setMatchAvailability}) => {
     );
 }
 
-const row = (match, availability, columns, setMatchAvailability) => {
+const Row = ({match, availability, columns, setMatchAvailability}) => {
     const array = [
         match.code, match.team, getDateString(match.date),
         match.time, match.venue, match.home, match.guest,
@@ -132,11 +136,14 @@ export const Matches = ({matches, availability, id, setAvailability}) => {
                                 return a.time > b.time ? 1 : -1
                             }
                         })
-                        .map((match) => row(
-                            match,
-                            availability?.[match.id],
-                            columns,
-                            setAvailability ? setMatchAvailability(match.id) : null,
+                        .map((match) => (
+                            <Row
+                                key={`row-${match.id}`}
+                                match={match}
+                                availability={availability?.[match.id]}
+                                columns={columns}
+                                setMatchAvailability={setAvailability ? setMatchAvailability(match.id) : null}
+                            />
                         ))}
                 </tbody>
             </Table>
