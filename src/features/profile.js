@@ -8,7 +8,7 @@ const logout = () => {
     supabase.auth.signOut();
 }
 
-export const Profile = ({session}) => {
+export const Profile = ({profile, session}) => {
     const [loading, setLoading] = useState(true);
     const [name, setName] = useState(null);
     const [gender, setGender] = useState(null);
@@ -19,17 +19,6 @@ export const Profile = ({session}) => {
         const getProfile = async () => {
             try {
                 setLoading(true);
-                const { user } = session;
-
-                const {data: profile, error, status} = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', user.id)
-                    .single();
-
-                if (error && status !== 406) {
-                    throw error
-                }
 
                 if (profile) {
                     setEmail(profile.email);
@@ -51,7 +40,7 @@ export const Profile = ({session}) => {
         }
 
         getProfile();
-    }, [session])
+    }, [profile, session])
 
     return (
         <>

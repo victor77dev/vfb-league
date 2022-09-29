@@ -23,6 +23,7 @@ export const Entrance = () => {
     const [session, setSession] = useState(null);
     const [activeTab, setActiveTab] = useState('home');
     const [recovery, setRecovery] = useState(false);
+    const [profile, setProfile] = useState(null);
 
     const storedTeam = localStorage.getItem(TEAM_FILTER);
     const [team, setFilteredTeam] = useState(storedTeam ? JSON.parse(storedTeam) : Array(6).fill(true));
@@ -74,9 +75,25 @@ export const Entrance = () => {
                     });
                 setMatches(modified);
             });
-
     }, []);
 
+    useEffect(() => {
+        const getProfile = async (session) => {
+            const {user} = session;
+
+            const {data} = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', user.id)
+                .single();
+
+            setProfile(data);
+        };
+
+        if (!session) return;
+
+        getProfile(session)
+    }, [session]);
 
     useEffect(() => {
         const stored = localStorage.getItem(TEAM_FILTER);
@@ -134,6 +151,7 @@ export const Entrance = () => {
             }
             <Tab eventKey="availability" title="Availability">
                 <Availability
+                    profile={profile}
                     team={team}
                     setFilteredTeam={setFilteredTeam}
                     session={session}

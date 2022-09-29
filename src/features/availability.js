@@ -7,31 +7,15 @@ import {TeamFilter} from '../components/teamFilter';
 import {Matches} from './matches';
 import {supabase} from './supabaseClient';
 
-export const Availability = ({session, matches, team, setFilteredTeam}) => {
-    const [profile, setProfile] = useState(null);
+export const Availability = ({profile, session, matches, team, setFilteredTeam}) => {
     const [availability, setAvailability] = useState({});
-
     useEffect(() => {
-        const getProfile = async (session) => {
-            const {user} = session;
-
-            const {data} = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('id', user.id)
-                .single();
-
-            setProfile(data);
-
-            if (data?.availability) {
-                setAvailability(data?.availability);
-            }
-        };
-
-        if (!session) return;
-
-        getProfile(session)
-    }, [session]);
+        if (profile?.availability) {
+            setAvailability(profile?.availability);
+        } else {
+            setAvailability({});
+        }
+    }, [profile])
 
     const updateAvailability = async (update) => {
         if (profile) {
