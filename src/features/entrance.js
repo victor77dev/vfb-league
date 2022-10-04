@@ -9,6 +9,7 @@ import {Signup} from './signup';
 import {Recovery} from './recovery';
 import {Login} from './login';
 import {Availability} from './availability';
+import {Captain} from './captain';
 
 import {supabase} from './supabaseClient';
 
@@ -87,7 +88,16 @@ export const Entrance = () => {
                 .eq('id', user.id)
                 .single();
 
-            setProfile(data);
+            const {data: isCaptain} = await supabase
+                .from('captains')
+                .select('isCaptain')
+                .eq('id', user.id);
+
+            if (isCaptain.length > 0) {
+                setProfile({...data, isCaptain});
+            } else {
+                setProfile(data);
+            }
         };
 
         if (!session) return;
@@ -128,7 +138,7 @@ export const Entrance = () => {
             {
                 session &&
                     <Tab eventKey="profile" title="Profile">
-                        <Profile session={session}/>
+                        <Profile session={session} profile={profile} />
                     </Tab>
             }
             {
@@ -158,6 +168,17 @@ export const Entrance = () => {
                     matches={matches}
                 />
             </Tab>
+            {
+                profile?.isCaptain &&
+                    <Tab eventKey="captain" title="Captain">
+                        <Captain
+                            team={team}
+                            setFilteredTeam={setFilteredTeam}
+                            session={session}
+                            matches={matches}
+                        />
+                    </Tab>
+            }
         </Tabs>
     );
 }

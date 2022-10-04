@@ -19,7 +19,6 @@ export const Availability = ({profile, session, matches, team, setFilteredTeam})
 
     const updateAvailability = async (update) => {
         if (profile) {
-            console.log('updating')
             await supabase.from('profiles').upsert({
                 id: profile?.id,
                 availability: update,
