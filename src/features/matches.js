@@ -7,6 +7,7 @@ import ToggleButton from 'react-bootstrap/ToggleButton';
 import {getDateString} from '../utils/date';
 import {Filter} from '../components/filter';
 import {TableFilter} from '../components/tableFilter';
+import {DatePicker} from '../components/datePicker';
 
 export const columnName = ['#', 'Team', 'Date', 'Time', 'Venue', 'Home', 'Guest'];
 
@@ -85,6 +86,7 @@ export const Matches = ({matches, availability, id, setAvailability}) => {
     const storedTeam = localStorage.getItem(TABLE_FILTER);
 
     const [columns, setFilteredColumns] = useState(storedTeam ? JSON.parse(storedTeam) : Array(columnName.length).fill(true));
+    const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
 
     const setMatchAvailability = (match) => (option) => {
         if (match) {
@@ -107,6 +109,7 @@ export const Matches = ({matches, availability, id, setAvailability}) => {
     return (
         <>
             <h2>Matches</h2>
+            <DatePicker setDate={setDate} date={date} />
             <h4>Select column ↓</h4>
             <Filter>
                 <TableFilter id={id} columns={columns} setFilteredColumns={setFilteredColumns} />
@@ -129,6 +132,7 @@ export const Matches = ({matches, availability, id, setAvailability}) => {
                 </thead>
                 <tbody>
                     {matches && matches
+                        .filter((match) => match.date >= new Date(date))
                         .sort((a, b) => {
                             if (a.date.getTime() !== b.date.getTime()) {
                                 return a.date > b.date ? 1 : -1;

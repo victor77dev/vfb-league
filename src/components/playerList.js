@@ -1,13 +1,11 @@
 import {useState, useEffect} from 'react';
 
 import Table from 'react-bootstrap/Table';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import ToggleButton from 'react-bootstrap/ToggleButton';
-import Button from 'react-bootstrap/Button';
 
 import {getDateString} from '../utils/date';
 import {Filter} from './filter';
 import {TableFilter} from './tableFilter';
+import {DatePicker} from '../components/datePicker';
 
 export const columnName = ['#', 'Team', 'Date', 'Time', 'Venue', 'Home', 'Guest'];
 
@@ -165,6 +163,7 @@ export const PlayerList = ({matches, players, profiles}) => {
     const storedTeam = localStorage.getItem(TABLE_FILTER);
 
     const [columns, setFilteredColumns] = useState(storedTeam ? JSON.parse(storedTeam) : Array(columnName.length).fill(true));
+    const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
 
     useEffect(() => {
         const stored = localStorage.getItem(TABLE_FILTER);
@@ -183,6 +182,7 @@ export const PlayerList = ({matches, players, profiles}) => {
     return (
         <>
             <h2>Matches</h2>
+            <DatePicker setDate={setDate} date={date} />
             <h4>Select column ↓</h4>
             <Filter>
                 <TableFilter id={id} columns={columns} setFilteredColumns={setFilteredColumns} />
@@ -194,6 +194,7 @@ export const PlayerList = ({matches, players, profiles}) => {
                         <th></th>
                         <th></th>
                         {matches && matches
+                            .filter((match) => match.date >= new Date(date))
                             .map((match) => (
                                 <Column
                                     key={`row-${match.id}`}
