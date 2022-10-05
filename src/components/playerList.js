@@ -193,15 +193,6 @@ export const PlayerList = ({matches, players, profiles}) => {
                         <th></th>
                         <th></th>
                         <th></th>
-                        <ColumnHeader>
-                            {
-                                columnName.map((column, index) => {
-                                    if (!columns[index]) return null;
-
-                                    return <MatchHeader key={column}>{column}</MatchHeader>;
-                                })
-                            }
-                        </ColumnHeader>
                         {matches && matches
                             .map((match) => (
                                 <Column
