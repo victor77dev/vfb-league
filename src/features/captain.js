@@ -10,6 +10,7 @@ import {supabase} from './supabaseClient';
 export const Captain = ({session, matches, team, setFilteredTeam}) => {
     const [players, setPlayers] = useState(null);
     const [profiles, setProfiles] = useState(null);
+    const [filteredMatches, setFilteredMatches] = useState(matches);
 
     useEffect(() => {
         supabase.from('players').select('*')
@@ -28,6 +29,29 @@ export const Captain = ({session, matches, team, setFilteredTeam}) => {
         getData();
     }, [])
 
+    useEffect(() => {
+        setFilteredMatches(matches?.filter((match) => team[match.team - 1]));
+    }, [matches, team])
+
+    const pickPlayer = async ({player, match, pick}) => {
+        const {data: oldPlayers} = await supabase.from('matches')
+            .select('players').eq('id', match);
+
+        const {data} = await supabase.from('matches')
+            .update({
+                players: {...oldPlayers?.[0].players, [player]: pick},
+            }).eq('id', match).select();
+
+        const updatedMatch = data?.[0];
+        setFilteredMatches( 
+            filteredMatches.map((match) => {
+            if (match.id === updatedMatch.id)
+                return {...match, players: updatedMatch.players};
+            else
+                return match;
+        }));
+    }
+
     if (!session) {
         return (
         <Alert key="danger" variant="danger">
@@ -42,9 +66,10 @@ export const Captain = ({session, matches, team, setFilteredTeam}) => {
                 <TeamFilter team={team} setFilteredTeam={setFilteredTeam} />
             </Filter>
             <PlayerList
-                matches={matches?.filter((match) => team[match.team - 1])}
+                matches={filteredMatches}
                 players={players}
                 profiles={profiles}
+                pickPlayer={pickPlayer}
             />
         </>
     );

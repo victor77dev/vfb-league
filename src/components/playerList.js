@@ -1,6 +1,7 @@
 import {useState, useEffect} from 'react';
 
 import Table from 'react-bootstrap/Table';
+import Button from 'react-bootstrap/Button';
 
 import {getDateString} from '../utils/date';
 import {Filter} from './filter';
@@ -19,7 +20,7 @@ const highlightVenue = (match) => {
     }
 }
 
-const AvailabilityButtons = ({match, availability, setMatchAvailability}) => {
+const AvailabilityButtons = ({match, availability, pickPlayer, player, selected}) => {
     const [value, setValue] = useState(availability);
 
     const white = {
@@ -30,7 +31,17 @@ const AvailabilityButtons = ({match, availability, setMatchAvailability}) => {
         setValue(availability);
     }, [availability]);
 
-    return <p style={availability !== 'Maybe' ? white : null}>{value}</p>;
+    return (
+        <>
+            <p style={availability !== 'Maybe' ? white : null}>{value}</p>
+            <Button
+                onClick={() => {pickPlayer({match, player, pick: !selected})}}
+                variant={selected ? 'success': 'primary'}
+            >
+                {selected ? 'Selected': 'Select'}
+            </Button>
+        </>
+    );
 }
 
 const MatchHeader = ({children}) => {
@@ -87,7 +98,7 @@ const Column = ({match, columns}) => {
     );
 };
 
-const Row = ({matches, columns, player, profile}) => {
+const Row = ({matches, columns, player, profile, pickPlayer}) => {
     const array = [
         player.name, player.single, player.double,
     ];
@@ -119,6 +130,7 @@ const Row = ({matches, columns, player, profile}) => {
                 {
                     matches && matches.map((match) => {
                         const playerAvailability = availability ? availability[match.id] : null;
+                        const selected = match?.players?.[player.id];
 
                         let styles;
                         switch (playerAvailability) {
@@ -146,7 +158,9 @@ const Row = ({matches, columns, player, profile}) => {
                                 <AvailabilityButtons
                                     match={match.id}
                                     availability={playerAvailability}
-                                    setMatchAvailability={() => {}}
+                                    player={player.id}
+                                    pickPlayer={pickPlayer}
+                                    selected={selected}
                                 />
                             </td>
                         );
@@ -157,13 +171,14 @@ const Row = ({matches, columns, player, profile}) => {
     );
 };
 
-export const PlayerList = ({matches, players, profiles}) => {
+export const PlayerList = ({matches, players, profiles, pickPlayer}) => {
     const id = 'CAPTAIN';
     const TABLE_FILTER = `TABLE_FILTER-${id}`;
     const storedTeam = localStorage.getItem(TABLE_FILTER);
 
     const [columns, setFilteredColumns] = useState(storedTeam ? JSON.parse(storedTeam) : Array(columnName.length).fill(true));
     const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+    const [filteredMatches, setFilteredMatches] = useState(matches);
 
     useEffect(() => {
         const stored = localStorage.getItem(TABLE_FILTER);
@@ -173,6 +188,10 @@ export const PlayerList = ({matches, players, profiles}) => {
             localStorage.setItem(TABLE_FILTER, current);
         }
     }, [columns, TABLE_FILTER]);
+
+    useEffect(() => {
+        setFilteredMatches(matches.filter((match) => match.date >= new Date(date)));
+    }, [date, matches]);
 
     const female = players?.filter((a) => (a.gender === 'F'));
     const male = players?.filter((a) => (a.gender === 'M'));
@@ -193,8 +212,7 @@ export const PlayerList = ({matches, players, profiles}) => {
                         <th></th>
                         <th></th>
                         <th></th>
-                        {matches && matches
-                            .filter((match) => match.date >= new Date(date))
+                        {filteredMatches && filteredMatches
                             .map((match) => (
                                 <Column
                                     key={`row-${match.id}`}
@@ -217,7 +235,8 @@ export const PlayerList = ({matches, players, profiles}) => {
                                         columns={columns}
                                         player={player}
                                         profile={profile}
-                                        matches={matches}
+                                        matches={filteredMatches}
+                                        pickPlayer={pickPlayer}
                                     />
                                 );
                             })
@@ -231,10 +250,11 @@ export const PlayerList = ({matches, players, profiles}) => {
                                 return (
                                     <Row
                                         key={`row-${player.id}`}
-                                        matches={matches}
+                                        matches={filteredMatches}
                                         columns={columns}
                                         player={player}
                                         profile={profile}
+                                        pickPlayer={pickPlayer}
                                     />
                                 );
                             })
