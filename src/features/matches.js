@@ -67,6 +67,17 @@ const Row = ({match, availability, columns, setMatchAvailability}) => {
                     if (!columns[index]) return null;
 
                     switch (key) {
+                        case 'code':
+                            return (
+                                <td key={value}>
+                                    <a
+                                        href={`?match=${match.id}`}
+                                    >
+                                        {value}
+                                    </a>
+                                </td>
+                            );
+
                         case 'venue':
                             return (
                                 <td key={value}>

@@ -10,6 +10,7 @@ import {Recovery} from './recovery';
 import {Login} from './login';
 import {Availability} from './availability';
 import {Captain} from './captain';
+import {Match} from './match';
 
 import {supabase} from './supabaseClient';
 
@@ -20,6 +21,10 @@ const TEAM_FILTER = 'TeamFilter';
 const NUM_OF_TEAM = 6;
 
 export const Entrance = () => {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const matchDetail = urlParams.get('match');
+
     const [matches, setMatches] = useState(null);
     const [session, setSession] = useState(null);
     const [activeTab, setActiveTab] = useState('home');
@@ -34,7 +39,11 @@ export const Entrance = () => {
             setSession(session)
 
             if (!recovery) {
-                setActiveTab('home');
+                if (matchDetail) {
+                    setActiveTab('match');
+                } else {
+                    setActiveTab('home');
+                }
             }
         });
 
@@ -43,12 +52,16 @@ export const Entrance = () => {
                 setRecovery(true);
                 setActiveTab('recovery');
             } else {
-                setActiveTab('home');
+                if (matchDetail) {
+                    setActiveTab('match');
+                } else {
+                    setActiveTab('home');
+                }
             }
 
             setSession(session);
         });
-    }, [recovery]);
+    }, [recovery, matchDetail]);
 
     useEffect(() => {
         supabase.from('matches').select('*')
@@ -136,6 +149,12 @@ export const Entrance = () => {
                     matches={matches}
                 />
             </Tab>
+            {
+                matchDetail &&
+                    <Tab eventKey="match" title="Match">
+                        <Match match={matches?.find((match) => match.id === matchDetail)} />
+                    </Tab>
+            }
             {
                 session &&
                     <Tab eventKey="profile" title="Profile">
