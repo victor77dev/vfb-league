@@ -108,16 +108,13 @@ const Column = ({match, columns}) => {
                             case 'venue':
                                 return (
                                     <MatchHeader key={value}>
-                                        {value}
-                                        (
-                                            <a
-                                                href={match.map}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                            >
-                                                Map
-                                            </a>
-                                        )
+                                        <a
+                                            href={match.map}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                        >
+                                            {value}
+                                        </a>
                                     </MatchHeader>
                                 );
 
