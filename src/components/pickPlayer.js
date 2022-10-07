@@ -215,11 +215,14 @@ export const PickPlayer = ({match: orignalMatch, players, isCaptain}) => {
 
     return (
         <>
-        <Button
-            onClick={() => {setNonEdit(!nonEdit)}}
-        >
-            {nonEdit ? 'Edit': 'View'}
-        </Button>
+        {
+            isCaptain &&
+            <Button
+                onClick={() => {setNonEdit(!nonEdit)}}
+            >
+                {nonEdit ? 'Edit': 'View'}
+            </Button>
+        }
         <Table bordered responsive hover>
             <thead>
                 <tr>
