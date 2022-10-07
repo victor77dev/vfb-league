@@ -94,6 +94,17 @@ const Column = ({match, columns}) => {
                         if (!columns[index]) return null;
 
                         switch (key) {
+                            case 'code':
+                                return (
+                                    <MatchHeader key={value}>
+                                        <a
+                                            href={`?match=${match.id}`}
+                                        >
+                                            {value}
+                                        </a>
+                                    </MatchHeader>
+                                );
+
                             case 'venue':
                                 return (
                                     <MatchHeader key={value}>
