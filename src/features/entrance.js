@@ -152,7 +152,10 @@ export const Entrance = () => {
             {
                 matchDetail &&
                     <Tab eventKey="match" title="Match">
-                        <Match match={matches?.find((match) => match.id === matchDetail)} />
+                        <Match
+                            match={matches?.find((match) => match.id === matchDetail)}
+                            isCaptain={profile?.isCaptain}
+                        />
                     </Tab>
             }
             {

@@ -1,4 +1,10 @@
+import {useState, useEffect} from 'react';
+
+import {supabase} from './supabaseClient';
+
 import {getDateString} from '../utils/date';
+
+import {PickPlayer} from '../components/pickPlayer';
 
 export const DisplayDetail = ({match, value, id}) => {
     switch (id) {
@@ -34,7 +40,16 @@ export const DisplayDetail = ({match, value, id}) => {
     }
 };
 
-export const Match = ({match, session}) => {
+export const Match = ({match, isCaptain}) => {
+    const [players, setPlayers] = useState(null);
+
+    useEffect(() => {
+        supabase.from('players').select('*')
+            .then(({ data }) => {
+                setPlayers(data);
+            });
+    }, []);
+
     if (!match) return null;
 
     const {code, team, date, time, venue, home, guest} = match;
@@ -48,22 +63,31 @@ export const Match = ({match, session}) => {
     }
 
     return (
-        Object.keys(array).map((key) => {
-            const value = array[key];
-            return (
-                <div key={`${match.id}-${key}`}>
-                    <h3
-                        style={headerStyles}
-                    >
-                        {key}
-                    </h3>
-                    <DisplayDetail
-                        match={match}
-                        value={value}
-                        id={key}
-                    />
-                </div>
-            );
-        })
+        <>
+            {
+                Object.keys(array).map((key) => {
+                    const value = array[key];
+                    return (
+                        <div key={`${match.id}-${key}`}>
+                            <h3
+                                style={headerStyles}
+                            >
+                                {key}
+                            </h3>
+                            <DisplayDetail
+                                match={match}
+                                value={value}
+                                id={key}
+                            />
+                        </div>
+                    );
+                })
+            }
+            <PickPlayer
+                match={match}
+                players={players}
+                isCaptain={isCaptain}
+            />
+        </>
     );
 }
