@@ -52,18 +52,40 @@ const AvailabilityButtons = ({match, availability, setMatchAvailability}) => {
 }
 
 const Row = ({match, availability, columns, setMatchAvailability}) => {
-    const array = [
-        match.code, match.team, getDateString(match.date),
-        match.time, match.venue, match.home, match.guest,
-    ];
+    const {code, team, date, time, venue, home, guest} = match;
+    const array = {
+        code, team, date: getDateString(date),
+        time, venue, home, guest,
+    };
 
     return (
         <tr key={match.id} className={highlightVenue(match)}>
             {
-                array.map((value, index) => {
+                Object.keys(array).map((key, index) => {
+                    const value = array[key];
+
                     if (!columns[index]) return null;
 
-                    return <td key={value}>{value}</td>;
+                    switch (key) {
+                        case 'venue':
+                            return (
+                                <td key={value}>
+                                    {value}
+                                    (
+                                        <a
+                                            href={match.map}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                        >
+                                            <b>Map</b>
+                                        </a>
+                                    )
+                                </td>
+                            );
+
+                        default:
+                            return <td key={value}>{value}</td>;
+                    }
                 })
             }
             { !!setMatchAvailability &&

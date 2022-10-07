@@ -72,6 +72,7 @@ export const Entrance = () => {
                         return {
                             ...match,
                             code: `T${match.team}.${count[match.team - 1]}`,
+                            map: encodeURI(`https://www.google.com/maps/search/?api=1&query=${match.venue}`),
                         }
                     });
                 setMatches(modified);

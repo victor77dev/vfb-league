@@ -72,10 +72,11 @@ const ColumnHeader = ({children, className}) => {
 
 
 const Column = ({match, columns}) => {
-    const array = [
-        match.code, match.team, getDateString(match.date),
-        match.time, match.venue, match.home, match.guest,
-    ];
+    const {code, team, date, time, venue, home, guest} = match;
+    const array = {
+        code, team, date: getDateString(date),
+        time, venue, home, guest,
+    };
 
     const styles = {
         display: 'flex',
@@ -87,10 +88,31 @@ const Column = ({match, columns}) => {
         <ColumnHeader className={highlightVenue(match)}>
             <div style={styles}>
                 {
-                    array.map((value, index) => {
+                    Object.keys(array).map((key, index) => {
+                        const value = array[key];
+
                         if (!columns[index]) return null;
 
-                        return <MatchHeader key={value}>{value}</MatchHeader>;
+                        switch (key) {
+                            case 'venue':
+                                return (
+                                    <MatchHeader key={value}>
+                                        {value}
+                                        (
+                                            <a
+                                                href={match.map}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                            >
+                                                Map
+                                            </a>
+                                        )
+                                    </MatchHeader>
+                                );
+
+                            default:
+                                return <MatchHeader key={value}>{value}</MatchHeader>;
+                        }
                     })
                 }
             </div>
