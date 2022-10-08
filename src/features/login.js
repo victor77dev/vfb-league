@@ -37,7 +37,7 @@ export const Login = () => {
     return (
         <>
             <Form validated={validated} onSubmit={handleLogin}>
-                <Form.Group className="mb-3" controlId="formBasicEmail">
+                <Form.Group className="mb-3" controlId="LoginEmail">
                     <Form.Label>Email address</Form.Label>
                     <Form.Control
                         type="email"
@@ -47,7 +47,7 @@ export const Login = () => {
                     />
                 </Form.Group>
     
-                <Form.Group className="mb-3" controlId="formBasicPassword">
+                <Form.Group className="mb-3" controlId="LoginPassword">
                     <Form.Label>Password</Form.Label>
                     <Form.Control
                         type="password"

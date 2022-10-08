@@ -54,7 +54,7 @@ export const Signup = () => {
 
     return (
         <Form validated={validated} onSubmit={handleSignup}>
-            <Form.Group className="mb-3" controlId="formBasicEmail">
+            <Form.Group className="mb-3" controlId="SignupEmail">
                 <Form.Label>Email address</Form.Label>
                 <Form.Control
                     type="email"
@@ -64,7 +64,7 @@ export const Signup = () => {
                 />
             </Form.Group>
   
-            <Form.Group className="mb-3" controlId="formBasicPassword">
+            <Form.Group className="mb-3" controlId="SignupPassword">
                 <Form.Label>Password</Form.Label>
                 <Form.Control
                     type="password"
@@ -73,7 +73,7 @@ export const Signup = () => {
                     onChange={(e) => setPassword(e.target.value)}
                 />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicName">
+            <Form.Group className="mb-3" controlId="SignupName">
                 <Form.Label>Username</Form.Label>
                 <Form.Select
                     value={name}
