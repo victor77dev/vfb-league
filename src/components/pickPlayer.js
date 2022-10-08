@@ -202,9 +202,13 @@ export const PickPlayer = ({match: orignalMatch, players, isCaptain}) => {
 
     useEffect(() => {
         if (players && players.length > 0 && match.players) {
-            setSelectedPlayers(Object.keys(match.players)?.map(
-                (key) => players?.find((player) => player.id === key)
-            ));
+            const playerIdList = Object.keys(match.players)
+                ?.filter((player) => match.players[player]);
+            setSelectedPlayers(
+                playerIdList?.map(
+                    (key) => players?.find((player) => player.id === key)
+                )
+            );
         }
     }, [players, match])
 
