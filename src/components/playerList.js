@@ -130,7 +130,7 @@ const Column = ({match, columns}) => {
 
 const Row = ({matches, columns, player, profile, pickPlayer}) => {
     const array = [
-        player.name, player.single, player.double,
+        player.name, player.single, player.double, player.team === 0 ? '' : player.team,
     ];
 
     const green = {
@@ -239,9 +239,10 @@ export const PlayerList = ({matches, players, profiles, pickPlayer}) => {
             <Table bordered responsive hover>
                 <thead>
                     <tr>
-                        <th></th>
-                        <th></th>
-                        <th></th>
+                        <th>Name</th>
+                        <th>Single</th>
+                        <th>Double</th>
+                        <th>Team</th>
                         {filteredMatches && filteredMatches
                             .map((match) => (
                                 <Column
