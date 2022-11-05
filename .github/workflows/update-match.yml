@@ -8,7 +8,7 @@ on:
         required: true
         default: 'updating'
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "0 0 * * 1"
 
 env:
   NODE_VERSION: '16.x'
