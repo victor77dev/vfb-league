@@ -11,6 +11,7 @@ import {Login} from './login';
 import {Availability} from './availability';
 import {Captain} from './captain';
 import {Match} from './match';
+import {Youtube} from './youtube';
 
 import {supabase} from './supabaseClient';
 
@@ -162,6 +163,12 @@ export const Entrance = () => {
                 session &&
                     <Tab eventKey="profile" title="Profile">
                         <Profile session={session} profile={profile} />
+                    </Tab>
+            }
+            {
+                session &&
+                    <Tab eventKey="youtube" title="Youtube">
+                        <Youtube session={session} profile={profile} />
                     </Tab>
             }
             {
