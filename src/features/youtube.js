@@ -6,6 +6,8 @@ import {injectScript} from '../utils/injectScript';
 
 const SCOPE = 'https://www.googleapis.com/auth/youtube.readonly';
 
+let playlistId;
+
 export const Youtube = ({profile, session}) => {
     const [loading, setLoading] = useState(true);
     const [client, setClient] = useState(null);
@@ -48,19 +50,38 @@ export const Youtube = ({profile, session}) => {
 
     }
 
+    function requestVideoPlaylist(playlistId) {
+        const requestOptions = {
+            playlistId: playlistId,
+            part: 'snippet',
+            maxResults: 10
+        };
+
+        var request = window.gapi.client.youtube.playlistItems.list(requestOptions);
+        request.execute(function(response) {
+            console.log(response);
+        });
+    }
+
+    function getUploads() {
+        requestVideoPlaylist(playlistId);
+    }
+
     // Make sure the client is loaded and sign-in is complete before calling this method.
     function execute() {
         return window.gapi.client.youtube.channels.list({
             "part": [
-            "snippet,contentDetails,statistics"
+                "snippet,contentDetails,statistics"
             ],
             "mine": true
         })
         .then(function(response) {
                 // Handle the results here (response.result has the parsed body).
                 console.log("Response", response);
-                },
-                function(err) { console.error("Execute error", err); });
+                playlistId = response.result.items[0].contentDetails.relatedPlaylists.uploads;
+                requestVideoPlaylist(playlistId);
+            },
+            function(err) { console.error("Execute error", err); });
     }
 
     useEffect(() => {
@@ -92,6 +113,7 @@ export const Youtube = ({profile, session}) => {
             <h3>Youtube</h3>
             <Button onClick={getToken}>Get token</Button>
             <Button onClick={loadClient}>Load</Button>
+            <Button onClick={getUploads}>Get uploads</Button>
             <Button onClick={revokeToken}>Revoke token</Button>
         </>
     );
