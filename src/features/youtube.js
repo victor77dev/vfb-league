@@ -3,6 +3,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import Button from 'react-bootstrap/Button';
 
 import {injectScript} from '../utils/injectScript';
+import {Uplaod} from '../components/upload';
 
 const SCOPE = 'https://www.googleapis.com/auth/youtube.readonly';
 
@@ -115,6 +116,7 @@ export const Youtube = ({profile, session}) => {
             <Button onClick={loadClient}>Load</Button>
             <Button onClick={getUploads}>Get uploads</Button>
             <Button onClick={revokeToken}>Revoke token</Button>
+            <Uplaod accessToken={accessToken}/>
         </>
     );
 }
