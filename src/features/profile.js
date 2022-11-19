@@ -28,9 +28,9 @@ export const Profile = ({profile, session}) => {
                         .eq('id', profile.player)
                         .single();
 
-                    setName(player.name);
-                    setGender(player.gender);
-                    setTeam(player.team);
+                    setName(player?.name);
+                    setGender(player?.gender);
+                    setTeam(player?.team);
                 }
             } catch (error) {
                 console.error(error.message);
