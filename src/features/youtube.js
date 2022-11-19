@@ -15,7 +15,6 @@ export const Youtube = ({profile, session}) => {
     const [accessToken, setAccessToken] = useState(null);
 
     function initClient() {
-        console.log(process.env)
         let gClient = window.google.accounts.oauth2.initTokenClient({
             client_id: process.env.REACT_APP_YOUTUBE_CLIENT_ID,
             scope: SCOPE,
