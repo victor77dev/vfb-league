@@ -71,7 +71,7 @@ const Row = ({match, availability, columns, setMatchAvailability}) => {
                             return (
                                 <td key={value}>
                                     <a
-                                        href={`?match=${match.id}`}
+                                        href={`/#/match/${match.id}`}
                                     >
                                         {value}
                                     </a>

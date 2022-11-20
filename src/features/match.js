@@ -12,7 +12,7 @@ export const DisplayDetail = ({match, value, id}) => {
             return (
                 <p key={value}>
                     <a
-                        href={`?match=${match.id}`}
+                        href={`/#/match/${match.id}`}
                     >
                         {value}
                     </a>

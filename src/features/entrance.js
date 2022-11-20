@@ -1,4 +1,5 @@
 import {useState, useEffect} from 'react';
+import {useNavigate, useParams} from 'react-router-dom';
 
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
@@ -6,7 +7,6 @@ import Tabs from 'react-bootstrap/Tabs';
 import {Home} from './home';
 import {Profile} from './profile';
 import {Signup} from './signup';
-import {Recovery} from './recovery';
 import {Login} from './login';
 import {Availability} from './availability';
 import {Captain} from './captain';
@@ -21,15 +21,13 @@ const TEAM_FILTER = 'TeamFilter';
 
 const NUM_OF_TEAM = 6;
 
-export const Entrance = () => {
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const matchDetail = urlParams.get('match');
+export const Entrance = ({tab='home'}) => {
+    const activeTab = tab;
 
+    const navigate = useNavigate();
+    const {matchDetail} = useParams();
     const [matches, setMatches] = useState(null);
     const [session, setSession] = useState(null);
-    const [activeTab, setActiveTab] = useState('home');
-    const [recovery, setRecovery] = useState(false);
     const [profile, setProfile] = useState(null);
 
     const storedTeam = localStorage.getItem(TEAM_FILTER);
@@ -37,32 +35,18 @@ export const Entrance = () => {
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
-            setSession(session)
-
-            if (!recovery) {
-                if (matchDetail) {
-                    setActiveTab('match');
-                } else {
-                    setActiveTab('home');
-                }
-            }
+            setSession(session);
         });
 
         supabase.auth.onAuthStateChange((event, session) => {
             if (event === "PASSWORD_RECOVERY") {
-                setRecovery(true);
-                setActiveTab('recovery');
-            } else {
-                if (matchDetail) {
-                    setActiveTab('match');
-                } else {
-                    setActiveTab('home');
-                }
+                navigate('/recovery');
             }
 
             setSession(session);
+            navigate('/home');
         });
-    }, [recovery, matchDetail]);
+    }, [navigate]);
 
     useEffect(() => {
         supabase.from('matches').select('*')
@@ -129,16 +113,12 @@ export const Entrance = () => {
         }
     }, [team]);
 
-    useEffect(() => {
-        if (recovery) {
-            setActiveTab('recovery');
-        }
-    }, [recovery]);
-
     return (
         <Tabs
             activeKey={activeTab}
-            onSelect={(key) => {setActiveTab(key)}}
+            onSelect={(key) => {
+                navigate(`/${key}`);
+            }}
             id="uncontrolled-tab-example"
             className="mb-3"
             fill
@@ -181,12 +161,6 @@ export const Entrance = () => {
                 !session &&
                         <Tab eventKey="signup" title="Signup">
                             <Signup />
-                        </Tab>
-            }
-            {
-                recovery &&
-                        <Tab eventKey="recovery" title="Recovery">
-                            <Recovery />
                         </Tab>
             }
             <Tab eventKey="availability" title="Availability">

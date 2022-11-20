@@ -32,8 +32,9 @@ export const Login = () => {
 
     const resetPassword = async (e) => {
         await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: 'https://victor77dev.github.io/vfb-league/',
+            redirectTo: 'https://victor77dev.github.io/vfb-league/#/recovery/',
         });
+        alert('Please check your email to reset password!');
     }
 
     return (

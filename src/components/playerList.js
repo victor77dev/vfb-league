@@ -98,7 +98,7 @@ const Column = ({match, columns}) => {
                                 return (
                                     <MatchHeader key={value}>
                                         <a
-                                            href={`?match=${match.id}`}
+                                            href={`/#/match/${match.id}`}
                                         >
                                             {value}
                                         </a>
