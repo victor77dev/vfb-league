@@ -5,7 +5,13 @@ import Button from 'react-bootstrap/Button';
 import {injectScript} from '../utils/injectScript';
 import {Upload} from '../components/upload';
 
-const SCOPE = 'https://www.googleapis.com/auth/youtube.readonly';
+const SCOPE = [
+    'https://www.googleapis.com/auth/youtube.readonly',
+    'https://www.googleapis.com/auth/youtube.upload',
+    'https://www.googleapis.com/auth/youtube',
+    'https://www.googleapis.com/auth/youtubepartner',
+    'https://www.googleapis.com/auth/youtube.force-ssl',
+];
 
 let playlistId;
 
@@ -17,7 +23,7 @@ export const Youtube = ({profile, session}) => {
     function initClient() {
         let gClient = window.google.accounts.oauth2.initTokenClient({
             client_id: process.env.REACT_APP_YOUTUBE_CLIENT_ID,
-            scope: SCOPE,
+            scope: SCOPE.join(' '),
             callback: (tokenResponse) => {
                 setAccessToken(tokenResponse.access_token);
             },
