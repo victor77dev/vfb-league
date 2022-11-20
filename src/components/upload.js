@@ -11,15 +11,13 @@ export const Upload = ({accessToken}) => {
         if (!accessToken) {
             return;
         }
+    }, [accessToken])
 
+    const onUploadClicked = () => {
         const uploader = new UploadVideo();
         uploader.ready(accessToken);
 
         setUploadVideo(uploader);
-        setUploading(false);
-    }, [accessToken])
-
-    const onUploadClicked = () => {
         setUploading(true);
         uploadVideo.handleUploadClicked();
     }

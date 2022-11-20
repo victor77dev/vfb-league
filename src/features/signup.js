@@ -22,7 +22,6 @@ export const Signup = () => {
             });
     }, []);
 
-
     const handleSignup = async (e) => {
         e.preventDefault()
         try {
