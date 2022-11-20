@@ -14,6 +14,8 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   REACT_APP_SUPABASE_URL: ${{ secrets.REACT_APP_SUPABASE_URL }}
   REACT_APP_SUPABASE_ANON_KEY: ${{ secrets.REACT_APP_SUPABASE_ANON_KEY }}
+  REACT_APP_YOUTUBE_API_KEY: ${{ secrets.REACT_APP_YOUTUBE_API_KEY }}
+  REACT_APP_YOUTUBE_CLIENT_ID: ${{ secrets.REACT_APP_YOUTUBE_CLIENT_ID }}
   GITHUB_ACTOR_EMAIL: ${{ github.event.head_commit.committer.email }}
 
 jobs:
