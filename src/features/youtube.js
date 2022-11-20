@@ -3,7 +3,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import Button from 'react-bootstrap/Button';
 
 import {injectScript} from '../utils/injectScript';
-import {Uplaod} from '../components/upload';
+import {Upload} from '../components/upload';
 
 const SCOPE = 'https://www.googleapis.com/auth/youtube.readonly';
 
@@ -35,6 +35,7 @@ export const Youtube = ({profile, session}) => {
     }
 
     async function loadClient() {
+        console.log(accessToken);
         await new Promise((resolve, reject) => {
             // NOTE: the 'auth2' module is no longer loaded.
             window.gapi.load('client', {callback: resolve, onerror: reject});
@@ -57,7 +58,7 @@ export const Youtube = ({profile, session}) => {
             maxResults: 10
         };
 
-        var request = window.gapi.client.youtube.playlistItems.list(requestOptions);
+        const request = window.gapi.client.youtube.playlistItems.list(requestOptions);
         request.execute(function(response) {
             console.log(response);
         });
@@ -115,7 +116,7 @@ export const Youtube = ({profile, session}) => {
             <Button onClick={loadClient}>Load</Button>
             <Button onClick={getUploads}>Get uploads</Button>
             <Button onClick={revokeToken}>Revoke token</Button>
-            <Uplaod accessToken={accessToken}/>
+            <Upload accessToken={accessToken}/>
         </>
     );
 }

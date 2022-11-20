@@ -1,15 +1,34 @@
+import { getValue } from '@testing-library/user-event/dist/utils';
 import {useState, useEffect} from 'react';
+import Button from 'react-bootstrap/Button';
 
-import {injectScript} from '../utils/injectScript';
+import {UploadVideo} from './uploadVideo';
 
-const SCOPE = 'https://www.googleapis.com/auth/youtube.readonly';
+export const Upload = ({accessToken}) => {
+    const [uploadVideo, setUploadVideo] = useState(null);
+    const [uploading, setUploading] = useState(false);
 
+    useEffect(() => {
+        if (!accessToken) {
+            return;
+        }
 
-export const Uplaod = ({}) => {
+        const uploader = new UploadVideo();
+        uploader.ready(accessToken);
+
+        setUploadVideo(uploader);
+        setUploading(false);
+    }, [accessToken])
+
+    const onUploadClicked = () => {
+        setUploading(true);
+        uploadVideo.handleUploadClicked();
+    }
+      
     return (
         <>
-            <div class="post-sign-in">
-                <div>
+            <div>
+                {/* <div>
                     <img id="channel-thumbnail" />
                     <span id="channel-name"></span>
                 </div>
@@ -28,11 +47,21 @@ export const Uplaod = ({}) => {
                         <option>unlisted</option>
                         <option>private</option>
                     </select>
-                </div>
+                </div> */}
                 <div>
-                    <input input type="file" id="file" class="button" accept="video/*" />
-                    <button id="button">Upload Video</button>
-                    <div class="during-upload">
+                    <input
+                        // input={value.toString()}
+                        type="file"
+                        id="file"
+                        accept="video/*"
+                    />
+                    <Button
+                        disabled={uploading}
+                        onClick={onUploadClicked}
+                    >
+                        Upload Video
+                    </Button>
+                    {/* <div class="during-upload">
                         <p>
                             <span id="percent-transferred"></span> % done (
                             <span id="bytes-transferred"></span>/<span id="total-bytes"></span> bytes)
@@ -48,7 +77,7 @@ export const Uplaod = ({}) => {
                     <p id="disclaimer">
                         By uploading a video, you certify that you own all rights to the content or that you are authorized by the owner to make the content publicly available on YouTube, and that it otherwise complies with the YouTube Terms of Service located at
                         <a href="http://www.youtube.com/t/terms" target="_blank">http://www.youtube.com/t/terms</a>
-                    </p>
+                    </p> */}
                 </div>
             </div>
         </>
