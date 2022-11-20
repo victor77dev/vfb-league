@@ -32,7 +32,6 @@ export const Youtube = ({profile, session}) => {
     }
 
     function getToken() {
-        console.log(client)
         client.requestAccessToken();
     }
 
