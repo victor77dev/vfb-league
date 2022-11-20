@@ -12,7 +12,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-var DRIVE_UPLOAD_URL = 'https://www.googleapis.com/upload/drive/v2/files/';
+const DRIVE_UPLOAD_URL = 'https://www.googleapis.com/upload/drive/v2/files/';
 
 
 /**
@@ -21,7 +21,7 @@ var DRIVE_UPLOAD_URL = 'https://www.googleapis.com/upload/drive/v2/files/';
  *
  * @constructor
  */
-var RetryHandler = function() {
+const RetryHandler = function() {
   this.interval = 1000; // Start at one second
   this.maxInterval = 60 * 1000; // Don't wait longer than a minute 
 };
@@ -92,7 +92,7 @@ RetryHandler.prototype.getRandomInt_ = function(min, max) {
  * @param {function} [options.onProgress] Callback for status for the in-progress upload
  * @param {function} [options.onError] Callback if upload fails
  */
-var MediaUploader = function(options) {
+export const MediaUploader = function(options) {
   var noop = function() {};
   this.file = options.file;
   this.contentType = options.contentType || this.file.type || 'application/octet-stream';
@@ -126,7 +126,7 @@ MediaUploader.prototype.upload = function() {
 
   xhr.open(this.httpMethod, this.url, true);
   xhr.setRequestHeader('Authorization', 'Bearer ' + this.token);
-  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
   xhr.setRequestHeader('X-Upload-Content-Length', this.file.size);
   xhr.setRequestHeader('X-Upload-Content-Type', this.contentType);
 
