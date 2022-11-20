@@ -12,6 +12,7 @@ import {Availability} from './availability';
 import {Captain} from './captain';
 import {Match} from './match';
 import {Youtube} from './youtube';
+import {YoutubeToken} from './youtubeToken';
 
 import {supabase} from './supabaseClient';
 
@@ -181,6 +182,12 @@ export const Entrance = ({tab='home'}) => {
                             session={session}
                             matches={matches}
                         />
+                    </Tab>
+            }
+            {
+                profile?.isCaptain &&
+                    <Tab eventKey="youtubeToken" title="Youtube Token">
+                        <YoutubeToken />
                     </Tab>
             }
         </Tabs>
