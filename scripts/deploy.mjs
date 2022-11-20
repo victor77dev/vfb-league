@@ -14,7 +14,6 @@ exec('npm run build', (error, stdout, stderr) => {
   if (error || stderr) {
     console.error(error);
     console.log(stderr);
-    console.log(stdout);
     process.exit(1);
   }
 
@@ -36,7 +35,6 @@ exec('npm run build', (error, stdout, stderr) => {
       if (error) {
         console.log(error);
         console.log(stderr);
-        console.log(stdout);
         process.exit(1);
       }
     }
