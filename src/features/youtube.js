@@ -2,6 +2,8 @@ import {useState, useEffect} from 'react';
 import Spinner from 'react-bootstrap/Spinner';
 import Button from 'react-bootstrap/Button';
 
+import {supabase} from './supabaseClient';
+
 import {injectScript} from '../utils/injectScript';
 import {Upload} from '../components/upload';
 
@@ -15,16 +17,54 @@ const SCOPE = [
 
 let playlistId;
 
+const channel = 'VfB Kiefholz Badminton League';
+
 export const Youtube = ({profile, session}) => {
     const [loading, setLoading] = useState(true);
     const [client, setClient] = useState(null);
     const [accessToken, setAccessToken] = useState(null);
 
+    useEffect(() => {
+        injectScript('https://apis.google.com/js/api.js');
+        injectScript('https://accounts.google.com/gsi/client', true)
+            .then(() => {
+                initClient();
+            });
+    }, []);
+
+    useEffect(() => {
+        const getProfile = async () => {
+            try {
+                setLoading(true);
+
+            } catch (error) {
+                console.error(error.message);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        getProfile();
+    }, [profile, session]);
+
+    useEffect(() => {
+        supabase.from('youtube').select('token').eq('id', channel)
+            .then(({ data, error, status }) => {
+                if (data.length > 0) {
+                    setAccessToken(data[0].token);
+                }
+            });
+    }, []);
+
     function initClient() {
         let gClient = window.google.accounts.oauth2.initTokenClient({
             client_id: process.env.REACT_APP_YOUTUBE_CLIENT_ID,
             scope: SCOPE.join(' '),
-            callback: (tokenResponse) => {
+            callback: async (tokenResponse) => {
+                await supabase.from('youtube').upsert({
+                    id: channel,
+                    token: tokenResponse.access_token,
+                });
                 setAccessToken(tokenResponse.access_token);
             },
         });
@@ -40,7 +80,6 @@ export const Youtube = ({profile, session}) => {
     }
 
     async function loadClient() {
-        console.log(accessToken);
         await new Promise((resolve, reject) => {
             // NOTE: the 'auth2' module is no longer loaded.
             window.gapi.load('client', {callback: resolve, onerror: reject});
@@ -49,10 +88,13 @@ export const Youtube = ({profile, session}) => {
             // NOTE: OAuth2 'scope' and 'client_id' parameters have moved to initTokenClient().
         })
         .then(async function() {
+            if (!window.gapi.client.getToken()) {
+                window.gapi.client.setToken({access_token: accessToken});
+            }
+
             await window.gapi.client.load('https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest');
             execute();
         });
-
     }
 
     function requestVideoPlaylist(playlistId) {
@@ -88,29 +130,6 @@ export const Youtube = ({profile, session}) => {
             },
             function(err) { console.error("Execute error", err); });
     }
-
-    useEffect(() => {
-        injectScript('https://accounts.google.com/gsi/client', true)
-            .then(() => {
-                initClient();
-            });
-        injectScript('https://apis.google.com/js/api.js');
-    }, []);
-
-    useEffect(() => {
-        const getProfile = async () => {
-            try {
-                setLoading(true);
-
-            } catch (error) {
-                console.error(error.message);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        getProfile();
-    }, [profile, session]);
 
     return (
         <>
