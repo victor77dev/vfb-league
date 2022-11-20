@@ -33,6 +33,7 @@ exec('npm run build', (error, stdout, stderr) => {
     (error) => {
       if (error) {
         console.log(error);
+        console.log(stderr);
         process.exit(1);
       }
     }
