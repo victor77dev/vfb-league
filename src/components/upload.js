@@ -1,4 +1,3 @@
-import { getValue } from '@testing-library/user-event/dist/utils';
 import {useState, useEffect} from 'react';
 import Button from 'react-bootstrap/Button';
 

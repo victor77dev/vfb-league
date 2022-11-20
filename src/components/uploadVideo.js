@@ -94,29 +94,30 @@ UploadVideo.prototype.uploadFile = function(file) {
             part: Object.keys(metadata).join(',')
         },
         onError: function(data) {
-            var message = data;
+            let message = data;
             // Assuming the error is raised by the YouTube API, data will be
             // a JSON string with error.message set. That may not be the
             // only time onError will be raised, though.
             try {
-                var errorResponse = JSON.parse(data);
+                const errorResponse = JSON.parse(data);
                 message = errorResponse.error.message;
             } finally {
                 alert(message);
             }
         },
         onProgress: function(data) {
-            var currentTime = Date.now();
-            var bytesUploaded = data.loaded;
-            var totalBytes = data.total;
+            const currentTime = Date.now();
+            const bytesUploaded = data.loaded;
+            const totalBytes = data.total;
             // The times are in millis, so we need to divide by 1000 to get seconds.
-            var bytesPerSecond = bytesUploaded / ((currentTime - this.uploadStartTime) / 1000);
-            var estimatedSecondsRemaining = (totalBytes - bytesUploaded) / bytesPerSecond;
-            var percentageComplete = (bytesUploaded * 100) / totalBytes;
+            const bytesPerSecond = bytesUploaded / ((currentTime - this.uploadStartTime) / 1000);
+            const estimatedSecondsRemaining = (totalBytes - bytesUploaded) / bytesPerSecond;
+            const percentageComplete = (bytesUploaded * 100) / totalBytes;
 
             console.log('upload-progress', bytesUploaded, totalBytes);
             console.log('percent-transferred', percentageComplete);
             console.log('percent-transferred', percentageComplete);
+            console.log('estimatedSecondsRemaining', estimatedSecondsRemaining);
 
             console.log('bytes-transferred', bytesUploaded);
             console.log('total-bytes', totalBytes);
@@ -124,7 +125,7 @@ UploadVideo.prototype.uploadFile = function(file) {
             // $('.during-upload').show();
         }.bind(this),
         onComplete: function(data) {
-            var uploadResponse = JSON.parse(data);
+            const uploadResponse = JSON.parse(data);
             this.videoId = uploadResponse.id;
             console.log('video-id', this.videoId);
             this.pollForVideoStatus();
@@ -155,7 +156,7 @@ UploadVideo.prototype.pollForVideoStatus = function() {
                 console.log(response.error.message);
                 setTimeout(this.pollForVideoStatus.bind(this), STATUS_POLLING_INTERVAL_MILLIS);
             } else {
-                var uploadStatus = response.items[0].status.uploadStatus;
+                const uploadStatus = response.items[0].status.uploadStatus;
                 switch (uploadStatus) {
                 // This is a non-final status, so we need to poll again.
                 case 'uploaded':
