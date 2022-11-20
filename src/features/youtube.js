@@ -50,7 +50,6 @@ export const Youtube = ({profile, session}) => {
             // NOTE: OAuth2 'scope' and 'client_id' parameters have moved to initTokenClient().
         })
         .then(async function() {
-            await window.gapi.client.setApiKey(process.env.REACT_APP_YOUTUBE_API_KEY);
             await window.gapi.client.load('https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest');
             execute();
         });
