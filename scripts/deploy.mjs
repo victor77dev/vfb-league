@@ -13,6 +13,8 @@ console.log(`Deploying ${branch} to ${process.env.PATH_PREFIX}`);
 exec('npm run build', (error, stdout, stderr) => {
   if (error || stderr) {
     console.error(error);
+    console.log(stderr);
+    console.log(stdout);
     process.exit(1);
   }
 
