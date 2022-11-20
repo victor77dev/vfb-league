@@ -84,6 +84,8 @@ const Column = ({match, columns}) => {
         width: '100%',
     };
 
+    const baseUrl = `${window.location.origin}${window.location.pathname}`;
+
     return (
         <ColumnHeader className={highlightVenue(match)}>
             <div style={styles}>
@@ -98,7 +100,7 @@ const Column = ({match, columns}) => {
                                 return (
                                     <MatchHeader key={value}>
                                         <a
-                                            href={`/#/match/${match.id}`}
+                                            href={`${baseUrl}/#/match/${match.id}`}
                                         >
                                             {value}
                                         </a>

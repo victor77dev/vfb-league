@@ -58,6 +58,8 @@ const Row = ({match, availability, columns, setMatchAvailability}) => {
         time, venue, home, guest,
     };
 
+    const baseUrl = `${window.location.origin}${window.location.pathname}`;
+
     return (
         <tr key={match.id} className={highlightVenue(match)}>
             {
@@ -71,7 +73,7 @@ const Row = ({match, availability, columns, setMatchAvailability}) => {
                             return (
                                 <td key={value}>
                                     <a
-                                        href={`/#/match/${match.id}`}
+                                        href={`${baseUrl}/#/match/${match.id}`}
                                     >
                                         {value}
                                     </a>

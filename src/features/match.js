@@ -7,12 +7,14 @@ import {getDateString} from '../utils/date';
 import {PickPlayer} from '../components/pickPlayer';
 
 export const DisplayDetail = ({match, value, id}) => {
+    const baseUrl = `${window.location.origin}${window.location.pathname}`;
+
     switch (id) {
         case 'code':
             return (
                 <p key={value}>
                     <a
-                        href={`/#/match/${match.id}`}
+                        href={`${baseUrl}/#/match/${match.id}`}
                     >
                         {value}
                     </a>
