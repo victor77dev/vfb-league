@@ -19,8 +19,7 @@ let playlistId;
 
 const channel = 'VfB Kiefholz Badminton League';
 
-export const Youtube = ({profile, session}) => {
-    const [loading, setLoading] = useState(true);
+export const Youtube = () => {
     const [client, setClient] = useState(null);
     const [accessToken, setAccessToken] = useState(null);
 
@@ -31,21 +30,6 @@ export const Youtube = ({profile, session}) => {
                 initClient();
             });
     }, []);
-
-    useEffect(() => {
-        const getProfile = async () => {
-            try {
-                setLoading(true);
-
-            } catch (error) {
-                console.error(error.message);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        getProfile();
-    }, [profile, session]);
 
     useEffect(() => {
         supabase.from('youtube').select('token').eq('id', channel)
@@ -133,7 +117,6 @@ export const Youtube = ({profile, session}) => {
 
     return (
         <>
-            {loading && <Spinner animation="border" />}
             <h3>Youtube</h3>
             <Button onClick={getToken}>Get token</Button>
             <Button onClick={loadClient}>Load</Button>

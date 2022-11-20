@@ -148,7 +148,7 @@ export const Entrance = ({tab='home'}) => {
             {
                 session &&
                     <Tab eventKey="youtube" title="Youtube">
-                        <Youtube session={session} profile={profile} />
+                        <Youtube />
                     </Tab>
             }
             {
