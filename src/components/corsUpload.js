@@ -1,10 +1,9 @@
-
 /*
 Copyright 2015 Google Inc. All Rights Reserved.
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
-  http://www.apache.org/licenses/LICENSE-2.0
+    http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,8 +21,8 @@ const DRIVE_UPLOAD_URL = 'https://www.googleapis.com/upload/drive/v2/files/';
  * @constructor
  */
 const RetryHandler = function() {
-  this.interval = 1000; // Start at one second
-  this.maxInterval = 60 * 1000; // Don't wait longer than a minute 
+    this.interval = 1000; // Start at one second
+    this.maxInterval = 60 * 1000; // Don't wait longer than a minute 
 };
 
 /**
@@ -32,15 +31,15 @@ const RetryHandler = function() {
  * @param {function} fn Function to invoke
  */
 RetryHandler.prototype.retry = function(fn) {
-  setTimeout(fn, this.interval);
-  this.interval = this.nextInterval_();
+    setTimeout(fn, this.interval);
+    this.interval = this.nextInterval_();
 };
 
 /**
  * Reset the counter (e.g. after successful request.)
  */
 RetryHandler.prototype.reset = function() {
-  this.interval = 1000;
+    this.interval = 1000;
 };
 
 /**
@@ -50,8 +49,8 @@ RetryHandler.prototype.reset = function() {
  * @private
  */
 RetryHandler.prototype.nextInterval_ = function() {
-  var interval = this.interval * 2 + this.getRandomInt_(0, 1000);
-  return Math.min(interval, this.maxInterval);
+    const interval = this.interval * 2 + this.getRandomInt_(0, 1000);
+    return Math.min(interval, this.maxInterval);
 };
 
 /**
@@ -62,7 +61,7 @@ RetryHandler.prototype.nextInterval_ = function() {
  * @private
  */
 RetryHandler.prototype.getRandomInt_ = function(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
+    return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
 
@@ -93,53 +92,53 @@ RetryHandler.prototype.getRandomInt_ = function(min, max) {
  * @param {function} [options.onError] Callback if upload fails
  */
 export const MediaUploader = function(options) {
-  var noop = function() {};
-  this.file = options.file;
-  this.contentType = options.contentType || this.file.type || 'application/octet-stream';
-  this.metadata = options.metadata || {
-    'title': this.file.name,
-    'mimeType': this.contentType
-  };
-  this.token = options.token;
-  this.onComplete = options.onComplete || noop;
-  this.onProgress = options.onProgress || noop;
-  this.onError = options.onError || noop;
-  this.offset = options.offset || 0;
-  this.chunkSize = options.chunkSize || 0;
-  this.retryHandler = new RetryHandler();
+    const noop = function() {};
+    this.file = options.file;
+    this.contentType = options.contentType || this.file.type || 'application/octet-stream';
+    this.metadata = options.metadata || {
+        'title': this.file.name,
+        'mimeType': this.contentType
+    };
+    this.token = options.token;
+    this.onComplete = options.onComplete || noop;
+    this.onProgress = options.onProgress || noop;
+    this.onError = options.onError || noop;
+    this.offset = options.offset || 0;
+    this.chunkSize = options.chunkSize || 0;
+    this.retryHandler = new RetryHandler();
 
-  this.url = options.url;
-  if (!this.url) {
-    var params = options.params || {};
-    params.uploadType = 'resumable';
-    this.url = this.buildUrl_(options.fileId, params, options.baseUrl);
-  }
-  this.httpMethod = options.fileId ? 'PUT' : 'POST';
+    this.url = options.url;
+    if (!this.url) {
+        var params = options.params || {};
+        params.uploadType = 'resumable';
+        this.url = this.buildUrl_(options.fileId, params, options.baseUrl);
+    }
+    this.httpMethod = options.fileId ? 'PUT' : 'POST';
 };
 
 /**
  * Initiate the upload.
  */
 MediaUploader.prototype.upload = function() {
-  var xhr = new XMLHttpRequest();
+    const xhr = new XMLHttpRequest();
 
-  xhr.open(this.httpMethod, this.url, true);
-  xhr.setRequestHeader('Authorization', 'Bearer ' + this.token);
-  xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
-  xhr.setRequestHeader('X-Upload-Content-Length', this.file.size);
-  xhr.setRequestHeader('X-Upload-Content-Type', this.contentType);
+    xhr.open(this.httpMethod, this.url, true);
+    xhr.setRequestHeader('Authorization', 'Bearer ' + this.token);
+    xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+    xhr.setRequestHeader('X-Upload-Content-Length', this.file.size);
+    xhr.setRequestHeader('X-Upload-Content-Type', this.contentType);
 
-  xhr.onload = function(e) {
-    if (e.target.status < 400) {
-      var location = e.target.getResponseHeader('Location');
-      this.url = location;
-      this.sendFile_();
-    } else {
-      this.onUploadError_(e);
-    }
-  }.bind(this);
-  xhr.onerror = this.onUploadError_.bind(this);
-  xhr.send(JSON.stringify(this.metadata));
+    xhr.onload = function(e) {
+        if (e.target.status < 400) {
+            var location = e.target.getResponseHeader('Location');
+            this.url = location;
+            this.sendFile_();
+        } else {
+            this.onUploadError_(e);
+        }
+    }.bind(this);
+    xhr.onerror = this.onUploadError_.bind(this);
+    xhr.send(JSON.stringify(this.metadata));
 };
 
 /**
@@ -148,28 +147,28 @@ MediaUploader.prototype.upload = function() {
  * @private
  */
 MediaUploader.prototype.sendFile_ = function() {
-  var content = this.file;
-  var end = this.file.size;
+    let content = this.file;
+    let end = this.file.size;
 
-  if (this.offset || this.chunkSize) {
-    // Only bother to slice the file if we're either resuming or uploading in chunks
-    if (this.chunkSize) {
-      end = Math.min(this.offset + this.chunkSize, this.file.size);
+    if (this.offset || this.chunkSize) {
+        // Only bother to slice the file if we're either resuming or uploading in chunks
+        if (this.chunkSize) {
+            end = Math.min(this.offset + this.chunkSize, this.file.size);
+        }
+        content = content.slice(this.offset, end);
     }
-    content = content.slice(this.offset, end);
-  }
 
-  var xhr = new XMLHttpRequest();
-  xhr.open('PUT', this.url, true);
-  xhr.setRequestHeader('Content-Type', this.contentType);
-  xhr.setRequestHeader('Content-Range', 'bytes ' + this.offset + '-' + (end - 1) + '/' + this.file.size);
-  xhr.setRequestHeader('X-Upload-Content-Type', this.file.type);
-  if (xhr.upload) {
-    xhr.upload.addEventListener('progress', this.onProgress);
-  }
-  xhr.onload = this.onContentUploadSuccess_.bind(this);
-  xhr.onerror = this.onContentUploadError_.bind(this);
-  xhr.send(content);
+    var xhr = new XMLHttpRequest();
+    xhr.open('PUT', this.url, true);
+    xhr.setRequestHeader('Content-Type', this.contentType);
+    xhr.setRequestHeader('Content-Range', 'bytes ' + this.offset + '-' + (end - 1) + '/' + this.file.size);
+    xhr.setRequestHeader('X-Upload-Content-Type', this.file.type);
+    if (xhr.upload) {
+        xhr.upload.addEventListener('progress', this.onProgress);
+    }
+    xhr.onload = this.onContentUploadSuccess_.bind(this);
+    xhr.onerror = this.onContentUploadError_.bind(this);
+    xhr.send(content);
 };
 
 /**
@@ -178,16 +177,16 @@ MediaUploader.prototype.sendFile_ = function() {
  * @private
  */
 MediaUploader.prototype.resume_ = function() {
-  var xhr = new XMLHttpRequest();
-  xhr.open('PUT', this.url, true);
-  xhr.setRequestHeader('Content-Range', 'bytes */' + this.file.size);
-  xhr.setRequestHeader('X-Upload-Content-Type', this.file.type);
-  if (xhr.upload) {
-    xhr.upload.addEventListener('progress', this.onProgress);
-  }
-  xhr.onload = this.onContentUploadSuccess_.bind(this);
-  xhr.onerror = this.onContentUploadError_.bind(this);
-  xhr.send();
+    const xhr = new XMLHttpRequest();
+    xhr.open('PUT', this.url, true);
+    xhr.setRequestHeader('Content-Range', 'bytes */' + this.file.size);
+    xhr.setRequestHeader('X-Upload-Content-Type', this.file.type);
+    if (xhr.upload) {
+        xhr.upload.addEventListener('progress', this.onProgress);
+    }
+    xhr.onload = this.onContentUploadSuccess_.bind(this);
+    xhr.onerror = this.onContentUploadError_.bind(this);
+    xhr.send();
 };
 
 /**
@@ -196,10 +195,10 @@ MediaUploader.prototype.resume_ = function() {
  * @param {XMLHttpRequest} xhr Request object
  */
 MediaUploader.prototype.extractRange_ = function(xhr) {
-  var range = xhr.getResponseHeader('Range');
-  if (range) {
-    this.offset = parseInt(range.match(/\d+/g).pop(), 10) + 1;
-  }
+    const range = xhr.getResponseHeader('Range');
+    if (range) {
+        this.offset = parseInt(range.match(/\d+/g).pop(), 10) + 1;
+    }
 };
 
 /**
@@ -211,13 +210,13 @@ MediaUploader.prototype.extractRange_ = function(xhr) {
  * @param {object} e XHR event
  */
 MediaUploader.prototype.onContentUploadSuccess_ = function(e) {
-  if (e.target.status === 200 || e.target.status === 201) {
-    this.onComplete(e.target.response);
-  } else if (e.target.status === 308) {
-    this.extractRange_(e.target);
-    this.retryHandler.reset();
-    this.sendFile_();
-  }
+    if (e.target.status === 200 || e.target.status === 201) {
+        this.onComplete(e.target.response);
+    } else if (e.target.status === 308) {
+        this.extractRange_(e.target);
+        this.retryHandler.reset();
+        this.sendFile_();
+    }
 };
 
 /**
@@ -228,11 +227,11 @@ MediaUploader.prototype.onContentUploadSuccess_ = function(e) {
  * @param {object} e XHR event
  */
 MediaUploader.prototype.onContentUploadError_ = function(e) {
-  if (e.target.status && e.target.status < 500) {
-    this.onError(e.target.response);
-  } else {
-    this.retryHandler.retry(this.resume_.bind(this));
-  }
+    if (e.target.status && e.target.status < 500) {
+        this.onError(e.target.response);
+    } else {
+        this.retryHandler.retry(this.resume_.bind(this));
+    }
 };
 
 /**
@@ -242,7 +241,7 @@ MediaUploader.prototype.onContentUploadError_ = function(e) {
  * @param {object} e XHR event
  */
 MediaUploader.prototype.onUploadError_ = function(e) {
-  this.onError(e.target.response); // TODO - Retries for initial upload
+    this.onError(e.target.response); // TODO - Retries for initial upload
 };
 
 /**
@@ -253,10 +252,10 @@ MediaUploader.prototype.onUploadError_ = function(e) {
  * @return {string} query string
  */
 MediaUploader.prototype.buildQuery_ = function(params) {
-  params = params || {};
-  return Object.keys(params).map(function(key) {
-    return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
-  }).join('&');
+    params = params || {};
+    return Object.keys(params).map(function(key) {
+        return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
+    }).join('&');
 };
 
 /**
@@ -268,13 +267,13 @@ MediaUploader.prototype.buildQuery_ = function(params) {
  * @return {string} URL
  */
 MediaUploader.prototype.buildUrl_ = function(id, params, baseUrl) {
-  var url = baseUrl || DRIVE_UPLOAD_URL;
-  if (id) {
-    url += id;
-  }
-  var query = this.buildQuery_(params);
-  if (query) {
-    url += '?' + query;
-  }
-  return url;
+    let url = baseUrl || DRIVE_UPLOAD_URL;
+    if (id) {
+        url += id;
+    }
+    var query = this.buildQuery_(params);
+    if (query) {
+        url += '?' + query;
+    }
+    return url;
 };
