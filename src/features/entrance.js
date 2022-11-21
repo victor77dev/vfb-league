@@ -45,9 +45,15 @@ export const Entrance = ({tab='home'}) => {
             }
 
             setSession(session);
-            navigate('/home');
+            if (event === 'SIGNED_IN' && activeTab === 'login') {
+                navigate('/home');
+            }
+
+            if (event === 'SIGNED_OUT') {
+                navigate('/home');
+            }
         });
-    }, [navigate]);
+    }, [navigate, activeTab]);
 
     useEffect(() => {
         supabase.from('matches').select('*')
