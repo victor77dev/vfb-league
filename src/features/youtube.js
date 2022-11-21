@@ -1,6 +1,4 @@
 import {useState, useEffect} from 'react';
-import Spinner from 'react-bootstrap/Spinner';
-import Button from 'react-bootstrap/Button';
 
 import {supabase} from './supabaseClient';
 
@@ -14,8 +12,6 @@ const SCOPE = [
     'https://www.googleapis.com/auth/youtubepartner',
     'https://www.googleapis.com/auth/youtube.force-ssl',
 ];
-
-let playlistId;
 
 const channel = 'VfB Kiefholz Badminton League';
 
@@ -49,6 +45,7 @@ export const Youtube = () => {
                     token: tokenResponse.access_token,
                 });
                 setAccessToken(tokenResponse.access_token);
+                loadClient();
             },
         });
     }

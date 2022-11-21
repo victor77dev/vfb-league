@@ -1,11 +1,9 @@
 import {useState, useEffect} from 'react';
-import Spinner from 'react-bootstrap/Spinner';
 import Button from 'react-bootstrap/Button';
 
 import {supabase} from './supabaseClient';
 
 import {injectScript} from '../utils/injectScript';
-import {Upload} from '../components/upload';
 
 const SCOPE = [
     'https://www.googleapis.com/auth/youtube.readonly',
