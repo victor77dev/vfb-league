@@ -24,6 +24,7 @@ export const Youtube = () => {
             .then(() => {
                 initClient();
             });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
