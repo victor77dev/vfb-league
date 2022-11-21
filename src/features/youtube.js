@@ -20,7 +20,6 @@ let playlistId;
 const channel = 'VfB Kiefholz Badminton League';
 
 export const Youtube = () => {
-    const [client, setClient] = useState(null);
     const [accessToken, setAccessToken] = useState(null);
 
     useEffect(() => {
@@ -41,7 +40,7 @@ export const Youtube = () => {
     }, []);
 
     function initClient() {
-        let gClient = window.google.accounts.oauth2.initTokenClient({
+        window.google.accounts.oauth2.initTokenClient({
             client_id: process.env.REACT_APP_YOUTUBE_CLIENT_ID,
             scope: SCOPE.join(' '),
             callback: async (tokenResponse) => {
@@ -52,15 +51,6 @@ export const Youtube = () => {
                 setAccessToken(tokenResponse.access_token);
             },
         });
-        setClient(gClient);
-    }
-
-    function getToken() {
-        client.requestAccessToken();
-    }
-
-    function revokeToken() {
-        window.google.accounts.oauth2.revoke(accessToken, () => {console.log('access token revoked')});
     }
 
     async function loadClient() {
@@ -77,51 +67,12 @@ export const Youtube = () => {
             }
 
             await window.gapi.client.load('https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest');
-            execute();
         });
-    }
-
-    function requestVideoPlaylist(playlistId) {
-        const requestOptions = {
-            playlistId: playlistId,
-            part: 'snippet',
-            maxResults: 10
-        };
-
-        const request = window.gapi.client.youtube.playlistItems.list(requestOptions);
-        request.execute(function(response) {
-            console.log(response);
-        });
-    }
-
-    function getUploads() {
-        requestVideoPlaylist(playlistId);
-    }
-
-    // Make sure the client is loaded and sign-in is complete before calling this method.
-    function execute() {
-        return window.gapi.client.youtube.channels.list({
-            "part": [
-                "snippet,contentDetails,statistics"
-            ],
-            "mine": true
-        })
-        .then(function(response) {
-                // Handle the results here (response.result has the parsed body).
-                console.log("Response", response);
-                playlistId = response.result.items[0].contentDetails.relatedPlaylists.uploads;
-                requestVideoPlaylist(playlistId);
-            },
-            function(err) { console.error("Execute error", err); });
     }
 
     return (
         <>
             <h3>Youtube</h3>
-            <Button onClick={getToken}>Get token</Button>
-            <Button onClick={loadClient}>Load</Button>
-            <Button onClick={getUploads}>Get uploads</Button>
-            <Button onClick={revokeToken}>Revoke token</Button>
             <Upload accessToken={accessToken}/>
         </>
     );
