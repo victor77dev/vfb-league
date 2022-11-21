@@ -19,7 +19,7 @@ export const Upload = ({accessToken}) => {
 
         setUploadVideo(uploader);
         setUploading(true);
-        uploadVideo.handleUploadClicked();
+        uploader.handleUploadClicked();
     }
       
     return (
