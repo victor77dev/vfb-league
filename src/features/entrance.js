@@ -26,6 +26,12 @@ export const Entrance = ({tab='home'}) => {
     const activeTab = tab;
 
     const navigate = useNavigate();
+
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('state') === 'youtubeToken' && tab !== 'youtubeToken') {
+        navigate('/youtubeToken');
+    }
+
     const {matchDetail} = useParams();
     const [matches, setMatches] = useState(null);
     const [session, setSession] = useState(null);

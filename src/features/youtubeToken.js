@@ -3,8 +3,7 @@ import Button from 'react-bootstrap/Button';
 
 import {supabase} from './supabaseClient';
 
-import {injectScript} from '../utils/injectScript';
-
+const redirectUri = 'http://localhost:3000/vfb-league/youtubeToken';
 const SCOPE = [
     'https://www.googleapis.com/auth/youtube.readonly',
     'https://www.googleapis.com/auth/youtube.upload',
@@ -18,45 +17,43 @@ let playlistId;
 const channel = 'VfB Kiefholz Badminton League';
 
 export const YoutubeToken = () => {
-    const [client, setClient] = useState(null);
     const [accessToken, setAccessToken] = useState(null);
 
-    useEffect(() => {
-        injectScript('https://apis.google.com/js/api.js');
-        injectScript('https://accounts.google.com/gsi/client', true)
-            .then(() => {
-                initClient();
-            });
-    }, []);
+    function getToken() {
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get('code');
 
-    useEffect(() => {
-        supabase.from('youtube').select('token').eq('id', channel)
-            .then(({ data, error, status }) => {
-                if (data.length > 0) {
-                    setAccessToken(data[0].token);
-                }
-            });
-    }, []);
+        const data = new URLSearchParams();
 
-    function initClient() {
-        let gClient = window.google.accounts.oauth2.initTokenClient({
-            client_id: process.env.REACT_APP_YOUTUBE_CLIENT_ID,
-            scope: SCOPE.join(' '),
-            callback: async (tokenResponse) => {
-                console.log(tokenResponse);
+        data.append('code', code);
+        data.append('client_id', process.env.REACT_APP_YOUTUBE_CLIENT_ID);
+        data.append('client_secret', process.env.REACT_APP_YOUTUBE_CLIENT_SECRET);
+        data.append('redirect_uri', redirectUri);
+        data.append('grant_type', 'authorization_code');
 
-                await supabase.from('youtube').upsert({
-                    id: channel,
-                    token: tokenResponse.access_token,
-                });
-                setAccessToken(tokenResponse.access_token);
-            },
+        fetch('https://oauth2.googleapis.com/token', {
+            method: 'POST',
+            body: data,
+        }).then(async (response) => {
+            console.log(response);
+            const json = await response.json();
+            console.log(json)
         });
-        setClient(gClient);
+
     }
 
-    function getToken() {
-        client.requestAccessToken();
+    function loginGoogle() {
+        const url = new URL('https://accounts.google.com/o/oauth2/v2/auth');
+
+        url.searchParams.append('scope', SCOPE.join(' '));
+        url.searchParams.append('client_id', process.env.REACT_APP_YOUTUBE_CLIENT_ID);
+        url.searchParams.append('redirect_uri', redirectUri);
+        url.searchParams.append('access_type', 'offline');
+        url.searchParams.append('include_granted_scopes', 'true');
+        url.searchParams.append('response_type', 'code');
+        url.searchParams.append('state', 'youtubeToken');
+
+        window.location.href = url.href;
     }
 
     function revokeToken() {
@@ -118,6 +115,7 @@ export const YoutubeToken = () => {
     return (
         <>
             <h3>Youtube</h3>
+            <Button onClick={loginGoogle}>Login Google</Button>
             <Button onClick={getToken}>Get token</Button>
             <Button onClick={loadClient}>Load</Button>
             <Button onClick={getUploads}>Get uploads</Button>
