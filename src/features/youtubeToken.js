@@ -43,6 +43,8 @@ export const YoutubeToken = () => {
             client_id: process.env.REACT_APP_YOUTUBE_CLIENT_ID,
             scope: SCOPE.join(' '),
             callback: async (tokenResponse) => {
+                console.log(tokenResponse);
+
                 await supabase.from('youtube').upsert({
                     id: channel,
                     token: tokenResponse.access_token,

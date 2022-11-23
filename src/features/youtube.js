@@ -20,10 +20,6 @@ export const Youtube = () => {
 
     useEffect(() => {
         injectScript('https://apis.google.com/js/api.js');
-        injectScript('https://accounts.google.com/gsi/client', true)
-            .then(() => {
-                initClient();
-            });
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -36,20 +32,14 @@ export const Youtube = () => {
             });
     }, []);
 
-    function initClient() {
-        window.google.accounts.oauth2.initTokenClient({
-            client_id: process.env.REACT_APP_YOUTUBE_CLIENT_ID,
-            scope: SCOPE.join(' '),
-            callback: async (tokenResponse) => {
-                await supabase.from('youtube').upsert({
-                    id: channel,
-                    token: tokenResponse.access_token,
-                });
-                setAccessToken(tokenResponse.access_token);
-                loadClient();
-            },
+    useEffect(() => {
+        if (!accessToken) return;
+
+        injectScript('https://apis.google.com/js/api.js').then(() => {
+            loadClient();
         });
-    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [accessToken]);
 
     async function loadClient() {
         await new Promise((resolve, reject) => {
@@ -61,6 +51,7 @@ export const Youtube = () => {
         })
         .then(async function() {
             if (!window.gapi.client.getToken()) {
+                console.log('set access toke', accessToken)
                 window.gapi.client.setToken({access_token: accessToken});
             }
 
