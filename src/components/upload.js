@@ -1,11 +1,19 @@
 import {useState, useEffect} from 'react';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import Spinner from 'react-bootstrap/Spinner';
+import ProgressBar from 'react-bootstrap/ProgressBar';
 
 import {UploadVideo} from './uploadVideo';
 
 export const Upload = ({accessToken}) => {
-    const [uploadVideo, setUploadVideo] = useState(null);
     const [uploading, setUploading] = useState(false);
+    const [file, setFile] = useState('');
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [validated, setValidated] = useState(false);
+    const [progress, setProgress] = useState(-1);
+    const [privacy, setPrivacy] = useState('unlisted');
 
     useEffect(() => {
         if (!accessToken) {
@@ -13,70 +21,87 @@ export const Upload = ({accessToken}) => {
         }
     }, [accessToken])
 
-    const onUploadClicked = () => {
-        const uploader = new UploadVideo();
+    const submitVideo = () => {
+        const uploader = new UploadVideo(setProgress);
         uploader.ready(accessToken);
 
-        setUploadVideo(uploader);
+        // setUploadVideo(uploader);
         setUploading(true);
-        uploader.handleUploadClicked();
+        uploader.handleUploadClicked(file, {
+            title,
+            description,
+            privacy,
+        });
     }
-      
+
+    const handleUpload = async (e) => {
+        e.preventDefault()
+        try {
+            submitVideo();
+        } catch (error) {
+            alert(error.error_description || error.message)
+            setValidated(false);
+        } finally {
+            setUploading(false);
+        }
+    };
+
     return (
         <>
-            <div>
-                {/* <div>
-                    <img id="channel-thumbnail" />
-                    <span id="channel-name"></span>
-                </div>
-                <div>
-                    <label for="title">Title:</label>
-                    <input id="title" type="text" value="Default Title" />
-                </div>
-                <div>
-                    <label for="description">Description:</label>
-                    <textarea id="description">Default description</textarea>
-                </div>
-                <div>
-                    <label for="privacy-status">Privacy Status:</label>
-                    <select id="privacy-status">
-                        <option>public</option>
-                        <option>unlisted</option>
-                        <option>private</option>
-                    </select>
-                </div> */}
-                <div>
-                    <input
-                        // input={value.toString()}
-                        type="file"
-                        id="file"
-                        accept="video/*"
+            <Form validated={validated} onSubmit={handleUpload}>
+                <Form.Group className="mb-3" controlId="Title">
+                    <Form.Label>Title</Form.Label>
+                    <Form.Control
+                        type="text"
+                        placeholder="Enter video title"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
                     />
-                    <Button
-                        disabled={uploading}
-                        onClick={onUploadClicked}
-                    >
-                        Upload Video
-                    </Button>
-                    {/* <div class="during-upload">
-                        <p>
-                            <span id="percent-transferred"></span> % done (
-                            <span id="bytes-transferred"></span>/<span id="total-bytes"></span> bytes)
-                        </p>
-                        <progress id="upload-progress" max="1" value="0"></progress>
-                    </div>
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="Description">
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control
+                        type="text"
+                        as="textarea"
+                        rows={3}
+                        placeholder="Enter description"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                    />
+                </Form.Group>
 
-                    <div class="post-upload">
-                        <p>Uploaded video with id <span id="video-id"></span>. Polling for status...</p>
-                        <ul id="post-upload-status"></ul>
-                        <div id="player"></div>
-                    </div>
-                    <p id="disclaimer">
-                        By uploading a video, you certify that you own all rights to the content or that you are authorized by the owner to make the content publicly available on YouTube, and that it otherwise complies with the YouTube Terms of Service located at
-                        <a href="http://www.youtube.com/t/terms" target="_blank">http://www.youtube.com/t/terms</a>
-                    </p> */}
-                </div>
-            </div>
+                <Form.Group className="mb-3" controlId="Privacy">
+                    <Form.Label>Select privacy policy</Form.Label>
+                    <Form.Select
+                        aria-label="Select privacy policy"
+                        value={privacy}
+                        onChange={(e) => setPrivacy(e.target.value)}
+                    >
+                        <option value="private">Private</option>
+                        <option value="unlisted">Unlisted</option>
+                        <option value="public">Public</option>
+                    </Form.Select>
+                </Form.Group>
+
+                <Form.Group className="mb-3" controlId="File">
+                    <Form.Control
+                        type="file"
+                        accept="video/*"
+                        onChange={(e) => setFile(e.target.files[0])}
+                    />
+                </Form.Group>
+
+                {
+                    progress >= 0 &&
+                    <Form.Group className="mb-3" controlId="Progress">
+                        <ProgressBar now={progress} label={`${progress}%`} />
+                    </Form.Group>
+                }
+
+                <Button variant="primary" type="submit">
+                    {uploading ? <Spinner animation="border" /> : 'Upload Video'}
+                </Button>
+            </Form>
         </>
     )
 }

@@ -7,7 +7,7 @@ const STATUS_POLLING_INTERVAL_MILLIS = 60 * 1000; // One minute.
  *
  * @constructor
  */
-export const UploadVideo = function() {
+export const UploadVideo = function(setProgress) {
     /**
      * The array of tags for the new YouTube video.
      *
@@ -15,7 +15,7 @@ export const UploadVideo = function() {
      * @type Array.<string>
      * @default ['google-cors-upload']
      */
-    this.tags = ['youtube-cors-upload'];
+    this.tags = ['youtube-upload'];
 
     /**
      * The numeric YouTube
@@ -37,6 +37,8 @@ export const UploadVideo = function() {
     this.videoId = '';
 
     this.uploadStartTime = 0;
+
+    this.setProgress = setProgress;
 };
 
 
@@ -71,17 +73,19 @@ UploadVideo.prototype.ready = function(accessToken) {
  *
  * @method uploadFile
  * @param {object} file File object corresponding to the video to upload.
+ * @param {object} data
  */
-UploadVideo.prototype.uploadFile = function(file) {
+UploadVideo.prototype.uploadFile = function(file, data) {
+    console.log(file, data)
     const metadata = {
         snippet: {
-            title: 'title aaa',
-            description: 'descirption aaa',
+            title: data.title,
+            description: data.description,
             tags: this.tags,
             categoryId: this.categoryId
         },
         status: {
-            privacyStatus: 'private',
+            privacyStatus: data.privacy || 'private',
         }
     };
 
@@ -99,9 +103,11 @@ UploadVideo.prototype.uploadFile = function(file) {
             // a JSON string with error.message set. That may not be the
             // only time onError will be raised, though.
             try {
+                console.log(data)
                 const errorResponse = JSON.parse(data);
                 message = errorResponse.error.message;
             } finally {
+                console.log(message)
                 alert(message);
             }
         },
@@ -116,7 +122,7 @@ UploadVideo.prototype.uploadFile = function(file) {
 
             console.log('upload-progress', bytesUploaded, totalBytes);
             console.log('percent-transferred', percentageComplete);
-            console.log('percent-transferred', percentageComplete);
+            this.setProgress(percentageComplete);
             console.log('estimatedSecondsRemaining', estimatedSecondsRemaining);
 
             console.log('bytes-transferred', bytesUploaded);
@@ -136,11 +142,10 @@ UploadVideo.prototype.uploadFile = function(file) {
     uploader.upload();
 };
 
-UploadVideo.prototype.handleUploadClicked = function() {
+UploadVideo.prototype.handleUploadClicked = function(file, data) {
     console.log('upload handle')
-    const file = document.getElementById('file').files[0];
     console.log(file);
-    this.uploadFile(file);
+    this.uploadFile(file, data);
 };
 
 UploadVideo.prototype.pollForVideoStatus = function() {
@@ -154,6 +159,7 @@ UploadVideo.prototype.pollForVideoStatus = function() {
             if (response.error) {
                 // The status polling failed.
                 console.log(response.error.message);
+                alert(response.error.message)
                 setTimeout(this.pollForVideoStatus.bind(this), STATUS_POLLING_INTERVAL_MILLIS);
             } else {
                 const uploadStatus = response.items[0].status.uploadStatus;
