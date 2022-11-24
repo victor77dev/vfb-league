@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 
 import {supabase} from './supabaseClient';
 
-const redirectUri = 'http://localhost:3000/vfb-league/youtubeToken';
+const redirectUri = 'http://localhost:3000/vfb-league';
 const SCOPE = [
     'https://www.googleapis.com/auth/youtube.readonly',
     'https://www.googleapis.com/auth/youtube.upload',
@@ -19,24 +19,47 @@ const channel = 'VfB Kiefholz Badminton League';
 export const YoutubeToken = () => {
     const [accessToken, setAccessToken] = useState(null);
 
+    useEffect(() => {
+        supabase.from('youtube').select('token').eq('id', `${channel} access`)
+            .then(({ data, error, status }) => {
+                if (data.length > 0) {
+                    setAccessToken(data[0].token);
+                }
+            });
+    }, []);
+
     function getToken() {
         const params = new URLSearchParams(window.location.search);
         const code = params.get('code');
+        
+        console.log(code)
+        fetch(, code, redirectUri);
 
+        window.location.search = '';
+
+    }
+
+    async function renewToken() {
+        const refreshToken = await supabase.from('youtube').select('token').eq('id', `${channel} refresh`)
+            .then(({ data }) => {
+                console.log(data)
+                if (data.length > 0) {
+                    return data[0].token;
+                }
+            });
         const data = new URLSearchParams();
 
-        data.append('code', code);
         data.append('client_id', process.env.REACT_APP_YOUTUBE_CLIENT_ID);
         data.append('client_secret', process.env.REACT_APP_YOUTUBE_CLIENT_SECRET);
-        data.append('redirect_uri', redirectUri);
-        data.append('grant_type', 'authorization_code');
+        data.append('refresh_token', refreshToken);
+        data.append('grant_type', 'refresh_token');
 
         fetch('https://oauth2.googleapis.com/token', {
             method: 'POST',
             body: data,
         }).then(async (response) => {
-            console.log(response);
             const json = await response.json();
+
             console.log(json)
         });
 

@@ -24,7 +24,7 @@ export const Youtube = () => {
     }, []);
 
     useEffect(() => {
-        supabase.from('youtube').select('token').eq('id', channel)
+        supabase.from('youtube').select('token').eq('id', `${channel} access`)
             .then(({ data, error, status }) => {
                 if (data.length > 0) {
                     setAccessToken(data[0].token);
