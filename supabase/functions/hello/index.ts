@@ -104,7 +104,7 @@ async function renewToken() {
     data.append('refresh_token', refreshToken.token);
     data.append('grant_type', 'refresh_token');
 
-    await fetch('https://oauth2.googleapis.com/token', {
+    return fetch('https://oauth2.googleapis.com/token', {
         method: 'POST',
         body: data,
     }).then(async (response) => {
@@ -123,10 +123,12 @@ async function renewToken() {
                     type: 'access',
                 },
             ]);
+
+            console.log('Token updated');
+
+            return 'Token refreshed';
         }
     });
-
-    return 'Token refreshed';
 }
 
 async function revokeToken() {
