@@ -22,15 +22,17 @@ export const Profile = ({profile, session}) => {
 
                 if (profile) {
                     setEmail(profile.email);
-                    const {data: player} = await supabase
-                        .from('players')
-                        .select('*')
-                        .eq('id', profile.player)
-                        .single();
+                    if (profile?.player) {
+                        const {data: player} = await supabase
+                            .from('players')
+                            .select('*')
+                            .eq('id', profile.player)
+                            .single();
 
-                    setName(player?.name);
-                    setGender(player?.gender);
-                    setTeam(player?.team);
+                        setName(player?.name);
+                        setGender(player?.gender);
+                        setTeam(player?.team);
+                    }
                 }
             } catch (error) {
                 console.error(error.message);
