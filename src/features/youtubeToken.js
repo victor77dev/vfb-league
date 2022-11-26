@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 
 import {supabase} from './supabaseClient';
 
-const redirectUri = 'http://localhost:3000/vfb-league/youtubeToken';
+const redirectUri = `${window.location.origin}/vfb-league/youtubeToken`;
 const SCOPE = [
     'https://www.googleapis.com/auth/youtube.readonly',
     'https://www.googleapis.com/auth/youtube.upload',
