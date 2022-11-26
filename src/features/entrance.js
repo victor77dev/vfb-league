@@ -100,13 +100,18 @@ export const Entrance = ({tab='home'}) => {
                 .eq('id', user.id)
                 .single();
 
-            const {data: isCaptain} = await supabase
+            const {data: role} = await supabase
                 .from('captains')
-                .select('isCaptain')
+                .select('*')
                 .eq('id', user.id);
 
-            if (isCaptain.length > 0) {
-                setProfile({...data, isCaptain});
+            if (role.length > 0) {
+                setProfile({
+                    ...data,
+                    isCaptain: role[0].isCaptain,
+                    isAdmin: role[0].isAdmin,
+                    isYoutube: role[0].isYoutube,
+                });
             } else {
                 setProfile(data);
             }
@@ -197,7 +202,7 @@ export const Entrance = ({tab='home'}) => {
                     </Tab>
             }
             {
-                profile?.isCaptain &&
+                profile?.isYoutube &&
                     <Tab eventKey="youtubeToken" title="Youtube Token">
                         <YoutubeToken />
                     </Tab>
