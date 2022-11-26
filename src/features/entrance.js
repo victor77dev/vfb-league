@@ -27,10 +27,15 @@ export const Entrance = ({tab='home'}) => {
 
     const navigate = useNavigate();
 
-    const params = new URLSearchParams(window.location.search)
-    if (params.get('state') === 'youtubeToken' && tab !== 'youtubeToken') {
-        navigate('/youtubeToken');
-    }
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('state') === 'youtubeToken' && tab !== 'youtubeToken') {
+            navigate('/youtubeToken', {
+                code: params.get('code'),
+            });
+        }
+    }, [navigate, tab]);
 
     const {matchDetail} = useParams();
     const [matches, setMatches] = useState(null);
