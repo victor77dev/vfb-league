@@ -58,7 +58,7 @@ const Row = ({match, availability, columns, setMatchAvailability}) => {
         time, venue, home, guest,
     };
 
-    const baseUrl = `${window.location.origin}${window.location.pathname}`;
+    const baseUrl = `${window.location.origin}/${window.location.pathname.split('/')[1]}`;
 
     return (
         <tr key={match.id} className={highlightVenue(match)}>

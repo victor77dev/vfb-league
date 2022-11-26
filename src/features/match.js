@@ -7,7 +7,7 @@ import {getDateString} from '../utils/date';
 import {PickPlayer} from '../components/pickPlayer';
 
 export const DisplayDetail = ({match, value, id}) => {
-    const baseUrl = `${window.location.origin}${window.location.pathname}`;
+    const baseUrl = `${window.location.origin}/${window.location.pathname.split('/')[1]}`;
 
     switch (id) {
         case 'code':

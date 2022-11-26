@@ -84,7 +84,7 @@ const Column = ({match, columns}) => {
         width: '100%',
     };
 
-    const baseUrl = `${window.location.origin}${window.location.pathname}`;
+    const baseUrl = `${window.location.origin}/${window.location.pathname.split('/')[1]}`;
 
     return (
         <ColumnHeader className={highlightVenue(match)}>
