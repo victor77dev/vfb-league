@@ -1,9 +1,10 @@
 import {useState, useEffect} from 'react';
+import {useNavigate} from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 
 import {supabase} from './supabaseClient';
 
-const redirectUri = 'http://localhost:3000/vfb-league';
+const redirectUri = 'http://localhost:3000/vfb-league/youtubeToken';
 const SCOPE = [
     'https://www.googleapis.com/auth/youtube.readonly',
     'https://www.googleapis.com/auth/youtube.upload',
@@ -14,10 +15,13 @@ let playlistId;
 const channel = 'VfB Kiefholz Badminton League';
 
 export const YoutubeToken = () => {
+    const navigate = useNavigate();
     const [accessToken, setAccessToken] = useState(null);
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
 
     useEffect(() => {
-        const getToken = () => {
+        const getAccessToken = () => {
             return supabase.from('youtube').select('*').eq('id', `${channel} access`)
                 .then(({ data, error, status }) => {
                     if (data.length > 0) {
@@ -27,29 +31,34 @@ export const YoutubeToken = () => {
         }
 
         (async () => {
-            let accessToken = await getToken();
+            let accessToken = await getAccessToken();
             if (!accessToken.expire) return;
 
             if (new Date(accessToken.expire) < new Date()) {
                 console.log('Token expired. Request renew!')
                 await renewToken();
-                accessToken = await getToken();
+                accessToken = await getAccessToken();
             }
             setAccessToken(accessToken.token);
         })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    function getToken() {
-        const params = new URLSearchParams(window.location.search);
-        const code = params.get('code');
+    useEffect(() => {
+        if (code) {
+            getToken();
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [code]);
 
+    async function getToken() {
         const data = {
-            code: code,
+            code,
             type: 'getToken',
             redirectUri,
         };
         
-        fetch('https://cpbxcfnzmgnrurwxespl.functions.supabase.co/hello', {
+        await fetch('https://cpbxcfnzmgnrurwxespl.functions.supabase.co/hello', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -58,7 +67,12 @@ export const YoutubeToken = () => {
             body: JSON.stringify(data), 
         });
 
-        window.location.search = '';
+        setTimeout(() => {
+            const origin = window.location.origin;
+            const pathname = '/vfb-league#';
+            window.location.href = `${origin}${pathname}`;
+            navigate('/youtubeToken');
+        }, 2000);
     }
 
     async function renewToken() {
@@ -66,7 +80,7 @@ export const YoutubeToken = () => {
             type: 'renewToken',
         };
         
-        fetch('https://cpbxcfnzmgnrurwxespl.functions.supabase.co/hello', {
+        await fetch('https://cpbxcfnzmgnrurwxespl.functions.supabase.co/hello', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -75,9 +89,11 @@ export const YoutubeToken = () => {
             body: JSON.stringify(data), 
         });
 
-        window.location.search = '';
         setTimeout(() => {
-            window.location.reload();
+            const origin = window.location.origin;
+            const pathname = '/vfb-league#';
+            window.location.href = `${origin}${pathname}`;
+            navigate('/youtubeToken');
         }, 2000);
     }
 
