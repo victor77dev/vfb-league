@@ -23,9 +23,9 @@ export const UploadVideo = function(setProgress) {
      *
      * @attribute categoryId
      * @type number
-     * @default 22
+     * @default 17
      */
-    this.categoryId = 22;
+    this.categoryId = 17;
 
     /**
      * The id of the new video.
