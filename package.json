@@ -28,6 +28,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "deploy": "node scripts/deploy.mjs",
+    "deployEdgeFunction": "node scripts/edgeFunction.mjs",
     "updateMatch": "node scripts/update-match.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

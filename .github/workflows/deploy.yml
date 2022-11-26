@@ -16,6 +16,7 @@ env:
   REACT_APP_SUPABASE_ANON_KEY: ${{ secrets.REACT_APP_SUPABASE_ANON_KEY }}
   REACT_APP_YOUTUBE_API_KEY: ${{ secrets.REACT_APP_YOUTUBE_API_KEY }}
   REACT_APP_YOUTUBE_CLIENT_ID: ${{ secrets.REACT_APP_YOUTUBE_CLIENT_ID }}
+  REACT_APP_YOUTUBE_CLIENT_SECRET: ${{ secrets.REACT_APP_YOUTUBE_CLIENT_SECRET }}
   GITHUB_ACTOR_EMAIL: ${{ github.event.head_commit.committer.email }}
 
 jobs:
@@ -49,3 +50,6 @@ jobs:
 
       - name: Deploy
         run: npm run deploy
+
+      - name: Deploy Edge Function
+        run: npm run deployEdgeFunction
