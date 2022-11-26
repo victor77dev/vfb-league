@@ -7,7 +7,7 @@ const STATUS_POLLING_INTERVAL_MILLIS = 60 * 1000; // One minute.
  *
  * @constructor
  */
-export const UploadVideo = function(setProgress) {
+export const UploadVideo = function(setProgress, setVideoId, setMessage) {
     /**
      * The array of tags for the new YouTube video.
      *
@@ -39,6 +39,8 @@ export const UploadVideo = function(setProgress) {
     this.uploadStartTime = 0;
 
     this.setProgress = setProgress;
+    this.setVideoId = setVideoId;
+    this.setMessage = setMessage;
 };
 
 
@@ -133,6 +135,7 @@ UploadVideo.prototype.uploadFile = function(file, data) {
         onComplete: function(data) {
             const uploadResponse = JSON.parse(data);
             this.videoId = uploadResponse.id;
+            this.setVideoId(this.videoId);
             console.log('video-id', this.videoId);
             this.pollForVideoStatus();
         }.bind(this)
@@ -145,7 +148,7 @@ UploadVideo.prototype.uploadFile = function(file, data) {
 UploadVideo.prototype.handleUploadClicked = function(file, data) {
     console.log('upload handle')
     console.log(file);
-    this.uploadFile(file, data);
+    return this.uploadFile(file, data);
 };
 
 UploadVideo.prototype.pollForVideoStatus = function() {
