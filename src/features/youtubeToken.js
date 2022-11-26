@@ -7,9 +7,6 @@ const redirectUri = 'http://localhost:3000/vfb-league';
 const SCOPE = [
     'https://www.googleapis.com/auth/youtube.readonly',
     'https://www.googleapis.com/auth/youtube.upload',
-    'https://www.googleapis.com/auth/youtube',
-    'https://www.googleapis.com/auth/youtubepartner',
-    'https://www.googleapis.com/auth/youtube.force-ssl',
 ];
 
 let playlistId;
@@ -20,49 +17,68 @@ export const YoutubeToken = () => {
     const [accessToken, setAccessToken] = useState(null);
 
     useEffect(() => {
-        supabase.from('youtube').select('token').eq('id', `${channel} access`)
-            .then(({ data, error, status }) => {
-                if (data.length > 0) {
-                    setAccessToken(data[0].token);
-                }
-            });
+        const getToken = () => {
+            return supabase.from('youtube').select('*').eq('id', `${channel} access`)
+                .then(({ data, error, status }) => {
+                    if (data.length > 0) {
+                        return data[0];
+                    }
+                });
+        }
+
+        (async () => {
+            let accessToken = await getToken();
+            if (!accessToken.expire) return;
+
+            if (new Date(accessToken.expire) < new Date()) {
+                console.log('Token expired. Request renew!')
+                await renewToken();
+                accessToken = await getToken();
+            }
+            setAccessToken(accessToken.token);
+        })();
     }, []);
 
     function getToken() {
         const params = new URLSearchParams(window.location.search);
         const code = params.get('code');
+
+        const data = {
+            code: code,
+            type: 'getToken',
+            redirectUri,
+        };
         
-        console.log(code)
-        fetch(, code, redirectUri);
+        fetch('https://cpbxcfnzmgnrurwxespl.functions.supabase.co/hello', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${process.env.REACT_APP_SUPABASE_ANON_KEY}`,
+            },
+            body: JSON.stringify(data), 
+        });
 
         window.location.search = '';
-
     }
 
     async function renewToken() {
-        const refreshToken = await supabase.from('youtube').select('token').eq('id', `${channel} refresh`)
-            .then(({ data }) => {
-                console.log(data)
-                if (data.length > 0) {
-                    return data[0].token;
-                }
-            });
-        const data = new URLSearchParams();
-
-        data.append('client_id', process.env.REACT_APP_YOUTUBE_CLIENT_ID);
-        data.append('client_secret', process.env.REACT_APP_YOUTUBE_CLIENT_SECRET);
-        data.append('refresh_token', refreshToken);
-        data.append('grant_type', 'refresh_token');
-
-        fetch('https://oauth2.googleapis.com/token', {
+        const data = {
+            type: 'renewToken',
+        };
+        
+        fetch('https://cpbxcfnzmgnrurwxespl.functions.supabase.co/hello', {
             method: 'POST',
-            body: data,
-        }).then(async (response) => {
-            const json = await response.json();
-
-            console.log(json)
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${process.env.REACT_APP_SUPABASE_ANON_KEY}`,
+            },
+            body: JSON.stringify(data), 
         });
 
+        window.location.search = '';
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000);
     }
 
     function loginGoogle() {
@@ -80,7 +96,18 @@ export const YoutubeToken = () => {
     }
 
     function revokeToken() {
-        window.google.accounts.oauth2.revoke(accessToken, () => {console.log('access token revoked')});
+        const data = {
+            type: 'revokeToken',
+        };
+
+        fetch('https://cpbxcfnzmgnrurwxespl.functions.supabase.co/hello', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${process.env.REACT_APP_SUPABASE_ANON_KEY}`,
+            },
+            body: JSON.stringify(data), 
+        });
     }
 
     async function loadClient() {
@@ -140,10 +167,10 @@ export const YoutubeToken = () => {
             <h3>Youtube</h3>
             <Button onClick={loginGoogle}>Login Google</Button>
             <Button onClick={getToken}>Get token</Button>
-            <Button onClick={loadClient}>Load</Button>
+            <Button onClick={renewToken}>Renew token</Button>
+            <Button onClick={loadClient}>Test</Button>
             <Button onClick={getUploads}>Get uploads</Button>
             <Button onClick={revokeToken}>Revoke token</Button>
         </>
     );
 }
-

@@ -5,14 +5,6 @@ import {supabase} from './supabaseClient';
 import {injectScript} from '../utils/injectScript';
 import {Upload} from '../components/upload';
 
-const SCOPE = [
-    'https://www.googleapis.com/auth/youtube.readonly',
-    'https://www.googleapis.com/auth/youtube.upload',
-    'https://www.googleapis.com/auth/youtube',
-    'https://www.googleapis.com/auth/youtubepartner',
-    'https://www.googleapis.com/auth/youtube.force-ssl',
-];
-
 const channel = 'VfB Kiefholz Badminton League';
 
 export const Youtube = () => {
@@ -24,12 +16,26 @@ export const Youtube = () => {
     }, []);
 
     useEffect(() => {
-        supabase.from('youtube').select('token').eq('id', `${channel} access`)
-            .then(({ data, error, status }) => {
-                if (data.length > 0) {
-                    setAccessToken(data[0].token);
-                }
-            });
+        const getToken = () => {
+            return supabase.from('youtube').select('*').eq('id', `${channel} access`)
+                .then(({ data, error, status }) => {
+                    if (data.length > 0) {
+                        return data[0];
+                    }
+                });
+        }
+
+        (async () => {
+            let accessToken = await getToken();
+            if (!accessToken.expire) return;
+
+            if (new Date(accessToken.expire) < new Date()) {
+                console.log('Token expired. Request renew!')
+                await renewToken();
+                accessToken = await getToken();
+            }
+            setAccessToken(accessToken.token);
+        })();
     }, []);
 
     useEffect(() => {
@@ -41,6 +47,21 @@ export const Youtube = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [accessToken]);
 
+    async function renewToken() {
+        const data = {
+            type: 'renewToken',
+        };
+        
+        return fetch('https://cpbxcfnzmgnrurwxespl.functions.supabase.co/hello', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${process.env.REACT_APP_SUPABASE_ANON_KEY}`,
+            },
+            body: JSON.stringify(data), 
+        });
+    }
+
     async function loadClient() {
         await new Promise((resolve, reject) => {
             // NOTE: the 'auth2' module is no longer loaded.
@@ -51,7 +72,6 @@ export const Youtube = () => {
         })
         .then(async function() {
             if (!window.gapi.client.getToken()) {
-                console.log('set access toke', accessToken)
                 window.gapi.client.setToken({access_token: accessToken});
             }
 
