@@ -1,5 +1,5 @@
 import {
-    HashRouter as Router,
+    BrowserRouter as Router,
     Routes,
     Route,
   } from 'react-router-dom';
@@ -16,7 +16,7 @@ function App() {
             breakpoints={['xxxl', 'xxl', 'xl', 'lg', 'md', 'sm', 'xs', 'xxs']}
             minBreakpoint="xxs"
         >
-            <Router>
+            <Router basename="/vfb-league">
                 <Routes>
                     <Route
                         exact

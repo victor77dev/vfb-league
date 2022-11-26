@@ -14,7 +14,7 @@ export const DisplayDetail = ({match, value, id}) => {
             return (
                 <p key={value}>
                     <a
-                        href={`${baseUrl}/#/match/${match.id}`}
+                        href={`${baseUrl}/match/${match.id}`}
                     >
                         {value}
                     </a>

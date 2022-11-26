@@ -73,7 +73,7 @@ const Row = ({match, availability, columns, setMatchAvailability}) => {
                             return (
                                 <td key={value}>
                                     <a
-                                        href={`${baseUrl}/#/match/${match.id}`}
+                                        href={`${baseUrl}/match/${match.id}`}
                                     >
                                         {value}
                                     </a>
