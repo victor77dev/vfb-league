@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/vfb-league/static/css/main.4ea24607.css",
-    "main.js": "/vfb-league/static/js/main.a71989e8.js",
+    "main.js": "/vfb-league/static/js/main.127e04ef.js",
     "static/js/787.e30cc3fc.chunk.js": "/vfb-league/static/js/787.e30cc3fc.chunk.js",
     "index.html": "/vfb-league/index.html",
     "main.4ea24607.css.map": "/vfb-league/static/css/main.4ea24607.css.map",
-    "main.a71989e8.js.map": "/vfb-league/static/js/main.a71989e8.js.map",
+    "main.127e04ef.js.map": "/vfb-league/static/js/main.127e04ef.js.map",
     "787.e30cc3fc.chunk.js.map": "/vfb-league/static/js/787.e30cc3fc.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.4ea24607.css",
-    "static/js/main.a71989e8.js"
+    "static/js/main.127e04ef.js"
   ]
 }
