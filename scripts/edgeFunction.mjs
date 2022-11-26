@@ -43,7 +43,7 @@ exec(`${supabaseCli} ${setSecret} ${clientId}`, (error, stdout, stderr) => {
   console.log(stdout);
 });
 
-const deploy = 'deploy';
+const deploy = 'functions deploy';
 const edgeFunc = 'hello';
 exec(`${supabaseCli} ${deploy} ${edgeFunc}`, (error, stdout, stderr) => {
   if (error || stderr) {
