@@ -8,7 +8,7 @@ import Alert from 'react-bootstrap/Alert';
 import {UploadVideo} from './uploadVideo';
 import {supabase} from '../features/supabaseClient';
 
-export const Upload = ({accessToken}) => {
+export const Upload = ({accessToken, user, id}) => {
     const [file, setFile] = useState('');
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -30,21 +30,35 @@ export const Upload = ({accessToken}) => {
         });
     }, [accessToken])
 
+    useEffect(() => {
+        (async () => {
+            if (videoId) {
+                await supabase.from('video').insert({
+                    id: videoId,
+                    user: id,
+                });
+            }
+        })();
+    }, [videoId, id]);
+
     const submitVideo = () => {
         const uploader = new UploadVideo(setProgress, setVideoId, setMessage);
         uploader.ready(accessToken);
 
         uploader.handleUploadClicked(file, {
             title,
-            description,
+            description: `${description}\nUploaded by ${user}`,
             privacy,
         });
-        supabase.from('youtube').select('*').eq('id', 'quota').single().then(async ({data}) => {
-            await supabase.from('youtube').update({
-                id: 'quota',
-                used: data.used + 1610,
+
+        (async () => {
+            await supabase.from('youtube').select('*').eq('id', 'quota').single().then(async ({data}) => {
+                await supabase.from('youtube').update({
+                    id: 'quota',
+                    used: data.used + 1610,
+                });
             });
-        });
+        })();
     }
 
     const handleUpload = async (e) => {

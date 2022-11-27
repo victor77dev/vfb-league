@@ -40,6 +40,10 @@ function App() {
                         element={<Entrance tab='youtube' />}
                     />
                     <Route
+                        path="/video"
+                        element={<Entrance tab='video' />}
+                    />
+                    <Route
                         path="/youtubeToken"
                         element={<Entrance tab='youtubeToken' />}
                     />

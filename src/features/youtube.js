@@ -7,11 +7,22 @@ import {Upload} from '../components/upload';
 
 const channel = 'VfB Kiefholz Badminton League';
 
-export const Youtube = () => {
+export const Youtube = ({profile, user}) => {
     const [accessToken, setAccessToken] = useState(null);
+    const [name, setName] = useState(null);
 
     useEffect(() => {
         injectScript('https://apis.google.com/js/api.js');
+
+        (async () => {
+            setName(profile?.email || user?.email);
+            if (profile?.player) {
+                await supabase.from('players').select('*').eq('id', profile?.player).single()
+                    .then(async ({data}) => {
+                        setName(data?.name || profile?.email || user?.email);
+                    });
+            }
+        })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -82,7 +93,7 @@ export const Youtube = () => {
     return (
         <>
             <h3>Youtube</h3>
-            <Upload accessToken={accessToken}/>
+            <Upload accessToken={accessToken} user={name} id={user.id}/>
         </>
     );
 }
