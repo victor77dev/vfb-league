@@ -6,6 +6,7 @@ import ProgressBar from 'react-bootstrap/ProgressBar';
 import Alert from 'react-bootstrap/Alert';
 
 import {UploadVideo} from './uploadVideo';
+import {supabase} from '../features/supabaseClient';
 
 export const Upload = ({accessToken}) => {
     const [file, setFile] = useState('');
@@ -16,11 +17,17 @@ export const Upload = ({accessToken}) => {
     const [videoId, setVideoId] = useState(null);
     const [privacy, setPrivacy] = useState('unlisted');
     const [message, setMessage] = useState(null);
+    const [warning, setWarning] = useState(false);
 
     useEffect(() => {
         if (!accessToken) {
             return;
         }
+        supabase.from('youtube').select('*').eq('id', 'quota').single().then(({data}) => {
+            if (data.used >= data.max) {
+                setWarning(true);
+            }
+        });
     }, [accessToken])
 
     const submitVideo = () => {
@@ -31,6 +38,12 @@ export const Upload = ({accessToken}) => {
             title,
             description,
             privacy,
+        });
+        supabase.from('youtube').select('*').eq('id', 'quota').single().then(async ({data}) => {
+            await supabase.from('youtube').update({
+                id: 'quota',
+                used: data.used + 1610,
+            });
         });
     }
 
@@ -63,6 +76,18 @@ export const Upload = ({accessToken}) => {
     return (
         <>
             <Form validated={validated} onSubmit={handleUpload}>
+                {
+                    warning &&
+                    <Form.Group className="mb-3" controlId="Warning">
+                        <Alert key="warning" variant="warning">
+                            Please aware we have YouTube upload quota limit (max 8 per day).
+                            <br/>
+                            It is close to the limit now. The upload might fail due to the limit.
+                            <br/>
+                            Please try again tomorrow if it fails.
+                        </Alert>
+                    </Form.Group>
+                }
                 <Form.Group className="mb-3" controlId="Title">
                     <Form.Label>Title</Form.Label>
                     <Form.Control
