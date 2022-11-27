@@ -21,6 +21,7 @@ export const Video = ({user}) => {
                 videoIds &&
                 videoIds.map((videoId) => (
                     <iframe
+                        key={videoId}
                         title="video"
                         width="420"
                         height="315"
