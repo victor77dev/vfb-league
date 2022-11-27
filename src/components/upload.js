@@ -23,11 +23,26 @@ export const Upload = ({accessToken, user, id}) => {
         if (!accessToken) {
             return;
         }
-        supabase.from('youtube').select('*').eq('id', 'quota').single().then(({data}) => {
-            if (data.used >= data.max) {
-                setWarning(true);
-            }
-        });
+
+        (async () => {
+            await supabase.from('youtube').select('*').eq('id', 'quota').single().then(async ({data}) => {
+                if (new Date(data.expire) < new Date()) {
+                    const tomorrow = new Date(new Date().setUTCHours(24, 0, 0, 0));
+
+                    await supabase.from('youtube').update({
+                        id: 'quota',
+                        used: 0,
+                        expire: tomorrow,
+                    });
+
+                    return;
+                }
+
+                if (data.used >= data.max) {
+                    setWarning(true);
+                }
+            });
+        })();
     }, [accessToken])
 
     useEffect(() => {
@@ -51,11 +66,14 @@ export const Upload = ({accessToken, user, id}) => {
             privacy,
         });
 
+        const tomorrow = new Date(new Date().setUTCHours(24, 0, 0, 0));
+
         (async () => {
             await supabase.from('youtube').select('*').eq('id', 'quota').single().then(async ({data}) => {
                 await supabase.from('youtube').update({
                     id: 'quota',
                     used: data.used + 1610,
+                    expire: tomorrow,
                 });
             });
         })();
