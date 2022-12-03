@@ -108,11 +108,15 @@ async function renewToken() {
         method: 'POST',
         body: data,
     }).then(async (response) => {
+        console.log(response);
+
         const json = await response.json();
         const {
             access_token,
             expires_in,
         } = json;
+
+        console.log(json)
 
         if (access_token && expires_in) {
             await supabase.from('youtube').upsert([
@@ -128,6 +132,8 @@ async function renewToken() {
 
             return 'Token refreshed';
         }
+    }).catch((error) => {
+        console.error('Error:', error);
     });
 }
 
