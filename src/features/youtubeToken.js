@@ -88,13 +88,6 @@ export const YoutubeToken = () => {
             },
             body: JSON.stringify(data), 
         });
-
-        setTimeout(() => {
-            const origin = window.location.origin;
-            const pathname = '/vfb-league#';
-            window.location.href = `${origin}${pathname}`;
-            navigate('/youtubeToken');
-        }, 2000);
     }
 
     function loginGoogle() {
