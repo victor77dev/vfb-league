@@ -316,7 +316,7 @@ const findAndUpdateMatch = async (supabase, match) => {
             console.log('checking update');
             if (!(checkDate && checkTime && checkVenue)) {
                 console.log('need udpate', match, found, found.id)
-                let { error, status } = await supabase
+                let { data, error, status } = await supabase
                     .from('matches')
                     .update({
                         date: match.date.replace(/[A-z]*\. /, ''),
@@ -325,7 +325,7 @@ const findAndUpdateMatch = async (supabase, match) => {
                     })
                     .eq('id', found.id);
 
-                console.log( error, status)
+                console.log(data, error, status)
             }
         } else {
             console.log('not found', match)
@@ -346,17 +346,21 @@ const updatePlayers = async (supabase, players) => {
         .from('players')
         .upsert(players, {
             onConflict: 'name',
-        }
-       );
+        });
     console.log(data, error, status);
 }
 
 const getMatches = async () => {
-    const supabase = await (await import('./supabase.js')).default();
+    const supabaseLib = await import('./supabase.js');
+    let supabase = await supabaseLib.initClient();
+
     const { data, error } = await supabase.auth.signInWithPassword({
         email: process.env.SUPABASE_ADMIN_EMAIL,
         password: process.env.SUPABASE_ADMIN_PASSWORD,
     })
+
+    const token = data?.session.access_token;
+    supabase = await supabaseLib.initClient(token);
 
     const url1 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+22%2F23&group=30319');
     const url2 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+22%2F23&group=30337');
@@ -386,11 +390,16 @@ const getMatches = async () => {
 }
 
 const getPlayers = async () => {
-    const supabase = await (await import('./supabase.js')).default();
+    const supabaseLib = await import('./supabase.js');
+    let supabase = await supabaseLib.initClient();
+
     const { data, error } = await supabase.auth.signInWithPassword({
         email: process.env.SUPABASE_ADMIN_EMAIL,
         password: process.env.SUPABASE_ADMIN_PASSWORD,
     })
+
+    const token = data?.session.access_token;
+    supabase = await supabaseLib.initClient(token);
 
     const men = await getPlayerList(true, 'https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/clubPools?displayTyp=vorrunde&club=18281&contestType=Herren&seasonName=2022%2F23');
     const women = await getPlayerList(false, 'https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/clubPools?displayTyp=vorrunde&club=18281&contestType=Damen&seasonName=2022%2F23');
