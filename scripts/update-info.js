@@ -5,6 +5,8 @@ const pdfReader = require('pdfjs-dist/legacy/build/pdf.js');
 const jsdom = require('jsdom');
 const {JSDOM} = jsdom;
 
+const args = process.argv.slice(2);
+
 const downloadFile = async (url, path) => {
     const res = await fetch(url);
 
@@ -16,10 +18,6 @@ const downloadFile = async (url, path) => {
         fileStream.on("finish", resolve);
     });
 };
-
-const openPdf = () => {
-
-}
 
 const parseMatch = async (pdf) => {
     const totalPage = pdf.numPages;
@@ -340,6 +338,7 @@ const updateMatches = async (supabase, matches) => {
         .from('matches')
         .insert(matches);
         console.log(error)
+    console.log(data, error, status);
 }
 
 const updatePlayers = async (supabase, players) => {
@@ -349,6 +348,7 @@ const updatePlayers = async (supabase, players) => {
             onConflict: 'name',
         }
        );
+    console.log(data, error, status);
 }
 
 const getMatches = async () => {
@@ -387,6 +387,10 @@ const getMatches = async () => {
 
 const getPlayers = async () => {
     const supabase = await (await import('./supabase.js')).default();
+    const { data, error } = await supabase.auth.signInWithPassword({
+        email: process.env.SUPABASE_ADMIN_EMAIL,
+        password: process.env.SUPABASE_ADMIN_PASSWORD,
+    })
 
     const men = await getPlayerList(true, 'https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/clubPools?displayTyp=vorrunde&club=18281&contestType=Herren&seasonName=2022%2F23');
     const women = await getPlayerList(false, 'https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/clubPools?displayTyp=vorrunde&club=18281&contestType=Damen&seasonName=2022%2F23');
@@ -396,7 +400,13 @@ const getPlayers = async () => {
 
 const getAllInfo = async () => {
     getMatches();
-    // getPlayers();
+    getPlayers();
 }
 
-getAllInfo();
+if (args[0] === 'match') {
+    getMatches();
+} else if (args[0] === 'player') {
+    getPlayers();
+} else if (args[0] === 'all') {
+    getAllInfo();
+}
