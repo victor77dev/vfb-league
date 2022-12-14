@@ -67,6 +67,10 @@ function App() {
                         path="/recovery"
                         element={<Recovery />}
                     />
+                    <Route
+                        path="/privacy"
+                        element={<Entrance tab='privacy' />}
+                    />
                 </Routes>
             </Router>
         </ThemeProvider>

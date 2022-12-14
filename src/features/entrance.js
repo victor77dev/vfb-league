@@ -14,6 +14,7 @@ import {Match} from './match';
 import {Youtube} from './youtube';
 import {Video} from './video';
 import {YoutubeToken} from './youtubeToken';
+import { Privacy } from './privacy';
 
 import {supabase} from './supabaseClient';
 
@@ -219,6 +220,9 @@ export const Entrance = ({tab='home'}) => {
                         <YoutubeToken />
                     </Tab>
             }
+            <Tab eventKey="privacy" title="Privacy">
+                <Privacy />
+            </Tab>
         </Tabs>
     );
 }
