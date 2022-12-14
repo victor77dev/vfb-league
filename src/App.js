@@ -71,6 +71,10 @@ function App() {
                         path="/privacy"
                         element={<Entrance tab='privacy' />}
                     />
+                    <Route
+                        path="/cookies"
+                        element={<Entrance tab='cookies' />}
+                    />
                 </Routes>
             </Router>
         </ThemeProvider>

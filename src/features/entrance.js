@@ -14,7 +14,8 @@ import {Match} from './match';
 import {Youtube} from './youtube';
 import {Video} from './video';
 import {YoutubeToken} from './youtubeToken';
-import { Privacy } from './privacy';
+import {Privacy} from './privacy';
+import {Cookies} from './cookies';
 
 import {supabase} from './supabaseClient';
 
@@ -222,6 +223,9 @@ export const Entrance = ({tab='home'}) => {
             }
             <Tab eventKey="privacy" title="Privacy">
                 <Privacy />
+            </Tab>
+            <Tab eventKey="cookies" title="Cookies">
+                <Cookies />
             </Tab>
         </Tabs>
     );
