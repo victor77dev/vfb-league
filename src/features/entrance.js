@@ -147,7 +147,8 @@ export const Entrance = ({tab='home'}) => {
             }}
             id="uncontrolled-tab-example"
             className="mb-3"
-            fill
+            fill={true}
+            mountOnEnter={true}
         >
             <Tab eventKey="home" title="Home">
                 <Home
