@@ -53,10 +53,14 @@ const parseMatch = async (pdf) => {
 
         let matchDate;
 
+        const year = new Date().getFullYear();
+
         Object.keys(textData).sort((a, b) => (b - a))
             .forEach((key) => {
                 const row = textData[key];
-                const date = row.match(/.+,.?,.*(2022|2023)/);
+
+                const dateRegex = new RegExp(`.+,.?,.*(${year}|${year + 1})`);
+                const date = row.match(dateRegex);
 
                 if (date?.length > 0) {
                     matchDate = date?.[0].replace(/,/g, '');
@@ -67,10 +71,12 @@ const parseMatch = async (pdf) => {
                     let removeTime;
 
                     if (date?.length > 0) {
-                        time = row.match(/.+,.?,.*(2022|2023),.?,[\d]+:[\d]+/)?.[0]
-                            .replace(/.+,.?,.*(2022|2023),.?,/, '');
+                        const timeRegex = new RegExp(`.+,.?,.*(${year}|${year + 1}),.?,[\\d]+:[\\d]+`);
+                        const replaceRegex = new RegExp(`.+,.?,.*(${year}|${year + 1}),.?,`);
+                        time = row.match(timeRegex)?.[0]
+                            .replace(replaceRegex, '');
 
-                        removeTime = row.replace(/.+,.?,.*(2022|2023),.?,[\d]+:[\d]+/, '');
+                        removeTime = row.replace(timeRegex, '');
                     } else {
                         time = row.match(/[\d]+:[\d]+/)?.[0];
                         removeTime = row.replace(/[\d]+:[\d]+/, '');
@@ -79,17 +85,13 @@ const parseMatch = async (pdf) => {
                     const extra = removeTime.match(/^ [a-z]/)?.[0];
                     removeTime = removeTime.replace(/^ [a-z]/, '');
 
-                    const venue = removeTime.match(/[äöüÄÖÜß\w]+/)?.[0];
+                    const remaining = removeTime.split(',').filter((text) => text.match(/[^ \r\n]+/));
 
-                    const removeVenue = removeTime.replace(/[äöüÄÖÜß\w]+[, ]+/, '');
+                    const venue = remaining[0].trim();
 
-                    const home = removeVenue.match(/[äöüÄÖÜß\w\/ \.]+,/)?.[0]
-                        .replace(/,/g, '');
+                    const home = remaining[1].trim();
 
-                    const removeHome = removeVenue.replace(/[äöüÄÖÜß\w\/ \.]+[, ]+/, '');
-
-                    const guest = removeHome.match(/[äöüÄÖÜß\w\/ \.]+,/)?.[0]
-                        .replace(/,/g, '');
+                    const guest = remaining[2].trim();
 
                     matches.push({
                         date: matchDate,
