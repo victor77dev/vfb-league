@@ -11,13 +11,14 @@ process.env.PATH_PREFIX = `${repo}/${deployEnv}`;
 console.log(`Deploying ${branch} to ${process.env.PATH_PREFIX}`);
 
 exec('npm run build', (error, stdout, stderr) => {
-  if (error || stderr) {
+  if (error) {
     console.error('Error:', error);
     console.log('stderr:', stderr);
     console.log('stdout', stdout);
     process.exit(1);
   }
 
+  console.log('stderr:', stderr);
   console.log('Run build log', stdout);
 
   ghPages.clean();
