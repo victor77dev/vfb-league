@@ -7,18 +7,9 @@ import {getDateString} from '../utils/date';
 import {Filter} from './filter';
 import {TableFilter} from './tableFilter';
 import {DatePicker} from '../components/datePicker';
+import {highlightVenue} from '../features/matches';
 
 export const columnName = ['#', 'Team', 'Date', 'Time', 'Venue', 'Home', 'Guest'];
-
-const highlightVenue = (match) => {
-    if (!match.isHome) return null;
-
-    if (match.venue.search('Plänterwald') >= 0) {
-        return 'table-primary';
-    } else {
-        return 'table-warning';
-    }
-}
 
 const AvailabilityButtons = ({match, availability, pickPlayer, player, selected}) => {
     const [value, setValue] = useState(availability);

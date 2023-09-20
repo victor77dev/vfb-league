@@ -11,11 +11,13 @@ import {DatePicker} from '../components/datePicker';
 
 export const columnName = ['#', 'Team', 'Date', 'Time', 'Venue', 'Home', 'Guest'];
 
-const highlightVenue = (match) => {
+export const highlightVenue = (match) => {
     if (!match.isHome) return null;
 
     if (match.venue.search('Plänterwald') >= 0) {
         return 'table-primary';
+    } else if (match.venue.search('Hänselstraße') >= 0) {
+        return 'table-success';
     } else {
         return 'table-warning';
     }
