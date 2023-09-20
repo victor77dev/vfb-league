@@ -7,6 +7,9 @@ const {JSDOM} = jsdom;
 
 const args = process.argv.slice(2);
 
+// It has a shorten form for team 7 as name is too long
+const clubName = 'Kiefhol';
+
 const downloadFile = async (url, path) => {
     const res = await fetch(url);
 
@@ -66,7 +69,7 @@ const parseMatch = async (pdf) => {
                     matchDate = date?.[0].replace(/,/g, '');
                 }
 
-                if (row.includes('Kiefholz')) {
+                if (row.includes(clubName)) {
                     let time;
                     let removeTime;
 
@@ -184,7 +187,7 @@ const getMatchList = async (team, url) => {
             ...match,
             venue: halls[match.venue],
             team,
-            isHome: match.home.indexOf('Kiefholz') >= 0,
+            isHome: match.home.indexOf(clubName) >= 0,
         }
     })
 
