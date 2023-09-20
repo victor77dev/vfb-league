@@ -385,12 +385,12 @@ const getMatches = async () => {
     matches.forEach((match) => {
         findAndUpdateMatch(supabase, match)
     })
-    // updateMatches(supabase, matches.map((match) => (
-    //     {
-    //         ...match,
-    //         date: match.date.replace(/[A-z]*\. /, ''),
-    //     }))
-    // );
+    updateMatches(supabase, matches.map((match) => (
+        {
+            ...match,
+            date: match.date.replace(/[A-z]*\. /, ''),
+        }))
+    );
 }
 
 const getPlayers = async () => {
