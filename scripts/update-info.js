@@ -223,6 +223,8 @@ const convertRomanToNum = (roman) => {
             return 5;
         case 'VI':
             return 6;
+        case 'VII':
+            return 7;
         default:
             return 0;
     }

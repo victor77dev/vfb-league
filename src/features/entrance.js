@@ -46,7 +46,7 @@ export const Entrance = ({tab='home'}) => {
     const [profile, setProfile] = useState(null);
 
     const storedTeam = localStorage.getItem(TEAM_FILTER);
-    const [team, setFilteredTeam] = useState(storedTeam ? JSON.parse(storedTeam) : Array(6).fill(true));
+    const [team, setFilteredTeam] = useState(storedTeam ? JSON.parse(storedTeam) : Array(NUM_OF_TEAM).fill(true));
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
