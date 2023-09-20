@@ -18,9 +18,12 @@ exec('npm run build', (error, stdout, stderr) => {
     process.exit(1);
   }
 
-  console.log(stdout);
+  console.log('Run build log', stdout);
 
   ghPages.clean();
+
+  console.log('Github page clean. Start publishing...');
+
   ghPages.publish(
     'build',
     {
