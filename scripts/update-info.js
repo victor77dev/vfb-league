@@ -333,14 +333,19 @@ const findAndUpdateMatch = async (supabase, match) => {
             }
         } else {
             console.log('not found', match)
+            insertMatch(supabase, {
+                ...match,
+                date: match.date.replace(/[A-z]*\. /, ''),
+            });
         }
     console.log('Update finished');
 }
 
-const updateMatches = async (supabase, matches) => {
+const insertMatch = async (supabase, match) => {
+    console.log('Insert match')
     let { data, error, status } = await supabase
         .from('matches')
-        .insert(matches);
+        .insert(match);
         console.log(error)
     console.log(data, error, status);
 }
@@ -386,13 +391,7 @@ const getMatches = async () => {
 
     matches.forEach((match) => {
         findAndUpdateMatch(supabase, match)
-    })
-    updateMatches(supabase, matches.map((match) => (
-        {
-            ...match,
-            date: match.date.replace(/[A-z]*\. /, ''),
-        }))
-    );
+    });
 }
 
 const getPlayers = async () => {
