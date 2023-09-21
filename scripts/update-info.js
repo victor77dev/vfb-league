@@ -336,7 +336,7 @@ const findAndUpdateMatch = async (supabase, match) => {
             }
         } else {
             console.log('not found', match)
-            insertMatch(supabase, {
+            await insertMatch(supabase, {
                 ...match,
                 date: match.date.replace(/[A-z]*\. /, ''),
             });
