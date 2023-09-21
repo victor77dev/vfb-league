@@ -85,12 +85,13 @@ const parseMatch = async (pdf) => {
                         removeTime = row.replace(/[\d]+:[\d]+/, '');
                     }
 
-                    const extra = removeTime.match(/^ [a-z]/)?.[0];
-                    removeTime = removeTime.replace(/^ [a-z]/, '');
-
                     const remaining = removeTime.split(',').filter((text) => text.match(/[^ \r\n]+/));
 
-                    const venue = remaining[0].trim();
+                    const extraOrVenue = remaining[0].trim().split(' ');
+
+                    const extra = extraOrVenue.length > 1 ? extraOrVenue[0] : '';
+
+                    const venue = extraOrVenue.length > 1 ? extraOrVenue[1] : extraOrVenue[0];
 
                     const home = remaining[1].trim();
 
