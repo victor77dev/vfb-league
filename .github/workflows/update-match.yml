@@ -7,8 +7,8 @@ on:
         description: 'Message'
         required: true
         default: 'updating'
-#  schedule:
-#    - cron: "0 0 * * 1"
+  schedule:
+    - cron: "0 0 * * 1"
 
 env:
   NODE_VERSION: '16.x'
