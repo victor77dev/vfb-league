@@ -62,7 +62,7 @@ const parseMatch = async (pdf) => {
             .forEach((key) => {
                 const row = textData[key];
 
-                const dateRegex = new RegExp(`.+,.?,.*(${year}|${year + 1})`);
+                const dateRegex = new RegExp(`.+,.?,.*(${year - 1}|${year}|${year + 1})`);
                 const date = row.match(dateRegex);
 
                 if (date?.length > 0) {
@@ -74,8 +74,8 @@ const parseMatch = async (pdf) => {
                     let removeTime;
 
                     if (date?.length > 0) {
-                        const timeRegex = new RegExp(`.+,.?,.*(${year}|${year + 1}),.?,[\\d]+:[\\d]+`);
-                        const replaceRegex = new RegExp(`.+,.?,.*(${year}|${year + 1}),.?,`);
+                        const timeRegex = new RegExp(`.+,.?,.*(${year - 1}|${year}|${year + 1}),.?,[\\d]+:[\\d]+`);
+                        const replaceRegex = new RegExp(`.+,.?,.*(${year - 1}|${year}|${year + 1}),.?,`);
                         time = row.match(timeRegex)?.[0]
                             .replace(replaceRegex, '');
 
