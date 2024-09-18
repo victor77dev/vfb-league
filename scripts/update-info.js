@@ -378,14 +378,14 @@ const getMatches = async () => {
     const token = data?.session.access_token;
     supabase = await supabaseLib.initClient(token);
 
-    const url1 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+23%2F24&group=32076');
-    const url2 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+23%2F24&group=32117');
-    const url3 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+23%2F24&group=32118');
-    const url4 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+23%2F24&group=32123');
-    const url5 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+23%2F24&group=32122');
-    const url6 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+23%2F24&group=32125');
-    const url7 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+23%2F24&group=32124');
-    const url8 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+23%2F24&group=32124');
+    const url1 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+24%2F25&group=34035');
+    const url2 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+24%2F25&group=34036');
+    const url3 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+24%2F25&group=33936');
+    const url4 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+24%2F25&group=33977');
+    const url5 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+24%2F25&group=33976');
+    const url6 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+24%2F25&group=33975');
+    const url7 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+24%2F25&group=33939');
+    const url8 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+24%2F25&group=33940');
 
     const matches = [];
 
@@ -415,8 +415,8 @@ const getPlayers = async () => {
     const token = data?.session.access_token;
     supabase = await supabaseLib.initClient(token);
 
-    const men = await getPlayerList(true, 'https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/clubPools?displayTyp=vorrunde&club=18281&contestType=Herren&seasonName=2023%2F24');
-    const women = await getPlayerList(false, 'https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/clubPools?displayTyp=vorrunde&club=18281&contestType=Damen&seasonName=2023%2F24');
+    const men = await getPlayerList(true, 'https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/clubPools?displayTyp=vorrunde&club=18281&contestType=Herren&seasonName=2024%2F25');
+    const women = await getPlayerList(false, 'https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/clubPools?displayTyp=vorrunde&club=18281&contestType=Damen&seasonName=2024%2F25');
 
     updatePlayers(supabase, [...men, ...women]);
 }
