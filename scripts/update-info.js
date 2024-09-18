@@ -229,6 +229,8 @@ const convertRomanToNum = (roman) => {
             return 6;
         case 'VII':
             return 7;
+        case 'VIII':
+            return 8;
         default:
             return 0;
     }
@@ -383,6 +385,7 @@ const getMatches = async () => {
     const url5 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+23%2F24&group=32122');
     const url6 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+23%2F24&group=32125');
     const url7 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+23%2F24&group=32124');
+    const url8 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+23%2F24&group=32124');
 
     const matches = [];
 
@@ -393,6 +396,7 @@ const getMatches = async () => {
     matches.push(...await getMatchList(5, url5));
     matches.push(...await getMatchList(6, url6));
     matches.push(...await getMatchList(7, url7));
+    matches.push(...await getMatchList(8, url8));
 
     matches.forEach((match) => {
         findAndUpdateMatch(supabase, match)
