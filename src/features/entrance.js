@@ -23,7 +23,7 @@ import {convertGermanDate} from '../utils/date';
 
 const TEAM_FILTER = 'TeamFilter';
 
-const NUM_OF_TEAM = 8;
+const NUM_OF_TEAM = 10;
 
 export const Entrance = ({tab='home'}) => {
     const activeTab = tab;
