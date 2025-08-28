@@ -415,8 +415,8 @@ const getPlayers = async () => {
     const token = data?.session.access_token;
     supabase = await supabaseLib.initClient(token);
 
-    const men = await getPlayerList(true, 'https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/clubPools?displayTyp=vorrunde&club=18281&contestType=Herren&seasonName=2024%2F25');
-    const women = await getPlayerList(false, 'https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/clubPools?displayTyp=vorrunde&club=18281&contestType=Damen&seasonName=2024%2F25');
+    const men = await getPlayerList(true, 'https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/clubPools?displayTyp=vorrunde&club=18281&contestType=Herren&seasonName=2025%2F26');
+    const women = await getPlayerList(false, 'https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/clubPools?displayTyp=vorrunde&club=18281&contestType=Damen&seasonName=2025%2F26');
 
     updatePlayers(supabase, [...men, ...women]);
 }
