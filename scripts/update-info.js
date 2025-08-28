@@ -378,14 +378,17 @@ const getMatches = async () => {
     const token = data?.session.access_token;
     supabase = await supabaseLib.initClient(token);
 
-    const url1 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+24%2F25&group=34035');
-    const url2 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+24%2F25&group=34036');
-    const url3 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+24%2F25&group=33936');
-    const url4 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+24%2F25&group=33977');
-    const url5 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+24%2F25&group=33976');
-    const url6 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+24%2F25&group=33975');
-    const url7 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+24%2F25&group=33939');
-    const url8 = await getScheduleUrl('https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaBADDE.woa/wa/groupPage?championship=BBMM+24%2F25&group=33940');
+    // Direct PDF URLs for 2025/26 season - 10 teams
+    const url1 = 'https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaDokumentBADDE.woa/wa/nuDokument?dokument=ScheduleReportFOP&group=38015';
+    const url2 = 'https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaDokumentBADDE.woa/wa/nuDokument?dokument=ScheduleReportFOP&group=38016';
+    const url3 = 'https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaDokumentBADDE.woa/wa/nuDokument?dokument=ScheduleReportFOP&group=38037';
+    const url4 = 'https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaDokumentBADDE.woa/wa/nuDokument?dokument=ScheduleReportFOP&group=38040';
+    const url5 = 'https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaDokumentBADDE.woa/wa/nuDokument?dokument=ScheduleReportFOP&group=38039';
+    const url6 = 'https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaDokumentBADDE.woa/wa/nuDokument?dokument=ScheduleReportFOP&group=38039';
+    const url7 = 'https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaDokumentBADDE.woa/wa/nuDokument?dokument=ScheduleReportFOP&group=38041';
+    const url8 = 'https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaDokumentBADDE.woa/wa/nuDokument?dokument=ScheduleReportFOP&group=38058';
+    const url9 = 'https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaDokumentBADDE.woa/wa/nuDokument?dokument=ScheduleReportFOP&group=38057';
+    const url10 = 'https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaDokumentBADDE.woa/wa/nuDokument?dokument=ScheduleReportFOP&group=38075';
 
     const matches = [];
 
@@ -397,6 +400,8 @@ const getMatches = async () => {
     matches.push(...await getMatchList(6, url6));
     matches.push(...await getMatchList(7, url7));
     matches.push(...await getMatchList(8, url8));
+    matches.push(...await getMatchList(9, url9));
+    matches.push(...await getMatchList(10, url10));
 
     matches.forEach((match) => {
         findAndUpdateMatch(supabase, match)
