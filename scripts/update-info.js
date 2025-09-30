@@ -167,7 +167,7 @@ const parseHall = async (pdf) => {
     return addressList;
 }
 
-const getMatchList = async (team, url) => {
+const getMatchList = async (team, url, teamFilter = null) => {
     const today = new Date().toISOString().slice(0, 10);
 
     const dir = `temp/${today}`;
@@ -183,7 +183,20 @@ const getMatchList = async (team, url) => {
     const rawMatch = await parseMatch(pdf);
     const halls = await parseHall(pdf);
 
-    const matches = rawMatch.map((match) => {
+    let filteredMatches = rawMatch;
+    
+    // Filter matches based on team-specific criteria
+    if (teamFilter) {
+        filteredMatches = rawMatch.filter((match) => {
+            const homeTeam = match.home;
+            const guestTeam = match.guest;
+            
+            // Check if the match involves the specific team variant
+            return homeTeam.includes(teamFilter) || guestTeam.includes(teamFilter);
+        });
+    }
+
+    const matches = filteredMatches.map((match) => {
         return {
             ...match,
             venue: halls[match.venue],
@@ -192,7 +205,7 @@ const getMatchList = async (team, url) => {
         }
     })
 
-    file = fs.createWriteStream(`${dir}/${team}_${today}.csv`);
+    let file = fs.createWriteStream(`${dir}/${team}_${today}.csv`);
 
     file.on('error', (err) => {
         console.error('Error: file can\'t save');
@@ -274,7 +287,7 @@ const getPlayerList = async (male, url) => {
         }
     });
 
-    file = fs.createWriteStream(`${dir}/players_${male ? 'men' : 'women'}_${today}.csv`);
+    let file = fs.createWriteStream(`${dir}/players_${male ? 'men' : 'women'}_${today}.csv`);
 
     file.on('error', (err) => {
         console.error('Error: file can\'t save');
@@ -383,6 +396,7 @@ const getMatches = async () => {
     const url2 = 'https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaDokumentBADDE.woa/wa/nuDokument?dokument=ScheduleReportFOP&group=38016';
     const url3 = 'https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaDokumentBADDE.woa/wa/nuDokument?dokument=ScheduleReportFOP&group=38037';
     const url4 = 'https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaDokumentBADDE.woa/wa/nuDokument?dokument=ScheduleReportFOP&group=38040';
+    // Teams 5 and 6 share the same PDF file but contain different team matches (Kiefholz V and VI)
     const url5 = 'https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaDokumentBADDE.woa/wa/nuDokument?dokument=ScheduleReportFOP&group=38039';
     const url6 = 'https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaDokumentBADDE.woa/wa/nuDokument?dokument=ScheduleReportFOP&group=38039';
     const url7 = 'https://bvbb-badminton.liga.nu/cgi-bin/WebObjects/nuLigaDokumentBADDE.woa/wa/nuDokument?dokument=ScheduleReportFOP&group=38041';
@@ -396,8 +410,8 @@ const getMatches = async () => {
     matches.push(...await getMatchList(2, url2));
     matches.push(...await getMatchList(3, url3));
     matches.push(...await getMatchList(4, url4));
-    matches.push(...await getMatchList(5, url5));
-    matches.push(...await getMatchList(6, url6));
+    matches.push(...await getMatchList(5, url5, 'Kiefholz V')); // Filter for team V only
+    matches.push(...await getMatchList(6, url6, 'Kiefholz VI')); // Filter for team VI only
     matches.push(...await getMatchList(7, url7));
     matches.push(...await getMatchList(8, url8));
     matches.push(...await getMatchList(9, url9));
