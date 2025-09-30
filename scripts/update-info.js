@@ -191,8 +191,12 @@ const getMatchList = async (team, url, teamFilter = null) => {
             const homeTeam = match.home;
             const guestTeam = match.guest;
             
+            // Use regex to match the exact team name as a whole word
+            // This prevents "VfB Kiefholz V" from matching "VfB Kiefholz VI"
+            const regex = new RegExp(`\\b${teamFilter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`);
+            
             // Check if the match involves the specific team variant
-            return homeTeam.includes(teamFilter) || guestTeam.includes(teamFilter);
+            return regex.test(homeTeam) || regex.test(guestTeam);
         });
     }
 
